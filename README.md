@@ -1,2 +1,2 @@
 # funstuff
-Miscellaneous explorations such as short Phtyon scripts.
+Miscellaneous explorations such as short Python scripts.
