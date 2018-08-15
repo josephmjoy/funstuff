@@ -7,7 +7,7 @@ function range(stop, start=0,  step=1) = [start: step: stop-1];
 function ir_tri(base) = [[0,0], [0, base], [base, 0]];
 
 tri_height = 5;
-base_thickness = 2;
+base_thickness = 1;
 
 // Extruded version
 module rt_prism(base, height)  {
@@ -50,7 +50,7 @@ module cushion_grabber(width) {
 }
 
 
-cushion_grabber(200);
+cushion_grabber(125);
 //dome(100);
 
 
