@@ -21,8 +21,8 @@ module prism_rows(base, height, n) {
     }
 }
 
-// Dome - used for differencing
-module dome(width) {
+// pan - upside down pan used for differencing
+module pan(width) {
     r = 7;
     ceiling_height = tri_height + base_thickness; // inner height;
     outer_height = r; // height of top of dome from above
@@ -45,13 +45,13 @@ module cushion_grabber(width) {
             cube([width, base_thickness, width]);
             translate([tri_height, base_thickness, 0]) prism_rows(tri_height, width, n);
         }
-        dome(width);
+        pan(width);
     }
 }
 
 
 cushion_grabber(125);
-//dome(100);
+//pan(100);
 
 
 
