@@ -42,6 +42,7 @@ PImage circles_mask() {
   pg.beginDraw();
   pg.fill(0, 0, 255);
   rect_grid(pg, 8, 5, 0.3);
+  //hex_circles(pg, 8, 5);
   pg.endDraw();
   PImage mask = new PImage(pg.width, pg.height);
   mask.set(0, 0, pg);
@@ -107,9 +108,14 @@ void rect_grid(PGraphics pg, int nw, int nh, float space) {
   }
 }
 
+// Draw rows of circles arranged on a hexagonal grid
+// Initial and last rows are one less.
+void hex_circles(PGraphics pg, int nw, int nh) {
+  draw_row(pg, 0, 0, DIA, 2);
+}
+
 
 void draw_background() {
-
   fill(255, 255, 255);
   rect(XO, XO, FRAME_W*PPI, FRAME_H*PPI); // including mat
   fill(0);
@@ -121,7 +127,6 @@ void draw_background() {
 void draw_circle(PGraphics pg, double x, double y) {
   double px = x*PPI ;//+ XO + MAT_W*PPI;
   double py = y*PPI ;//+ YO + MAT_H*PPI;
-  //pg.fill(255, 255*(float)Math.random(), 255*(float)Math.random());
   pg.fill(0, 0, 255); // Just blue channel used for mask.
   pg.ellipse((float)px, (float)py, DIA*PPI, DIA*PPI);
 }
@@ -136,9 +141,15 @@ double calc_gap(double span, double dia, int n) {
 // Vertical distance between centers of rows given horizontal distance between
 // circle centers in hexagonal grid.
 double hex_row_dist(double center_dist) {
-  return Math.sqrt(3.0)/2; // center_dist * sin(60)
+  return center_dist * Math.sqrt(3.0)/2; // center_dist * sin(60)
 }
 
 // Draw {n} circles, centers starting at {(dx, yc)} and proceeding horizontally by {dx}.
 void draw_row(PGraphics pg, double xc, double yc, double dx, int n) {
+  double gap = calc_gap(pic_w, DIA, n);
+  draw_circle(pg, xc+DIA/2 + gap + gap, yc);
+  for(int i = 1; i<n; i++){
+    draw_circle(pg, xc+(DIA + gap)*i, yc);
+  }
+ // draw_circle(pg, xc, yc);
 }
