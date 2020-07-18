@@ -124,7 +124,7 @@ void hex_circles(PGraphics pg, int nw, int nh) {
     double xOff = 0;
     int nw1 = nw;
     // we offset every other row, and also reduce the count of circles in that row...
-    if (j%2 == 1) {
+    if (j%2 == 0) {
        xOff = dx/2;
        nw1 = nw - 1;
     }   
