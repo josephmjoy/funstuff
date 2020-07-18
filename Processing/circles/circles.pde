@@ -15,8 +15,7 @@ final float DIA = 2.5; // Circle dia (circle spacing is calculated)
 // For hex: NW = 5; NH = 9;
 final int NW = 9; //5;//8;
 final int NH = 5; //9;//5;
-float XO = 20, YO = 20;// offsets from window corner
-final float PPI = 90; // Pixels per inch when rendering image.
+final float PPI = 70; // Pixels per inch when rendering image.
 final float pic_w = FRAME_W - 2*MAT_W; // width (inches) of visible part of picture (portion inside mat)
 final float pic_h = FRAME_H - 2*MAT_H; // height (inches) of visible part of picture
 final int pic_wpx = (int) (pic_w*PPI); // width of above in pix
@@ -35,18 +34,24 @@ color DARK_OLIVE = color(85, 107, 47);
 color CHOCOLATE = color(128, 42, 0);
 color OXFORD_BLUE = color(0, 33, 71);
 color BLACK = color(0);
-final color FRAME_COLOR = CHOCOLATE; //MAPLE;
+color WHITE = color(255);
+
 final color WALL_COLOR = CREAM;
+final color FRAME_COLOR = MAPLE;
+final color MAT_COLOR = WHITE;
 final color BACKDROP_COLOR = OXFORD_BLUE;
 
 
 PImage picture; // Contains the visible part of picture.
+float XO, YO; // offsets from window corner
 
 void setup() {
   //size(2000, 1000);
   fullScreen();
   //size(850, 1400);
   //size(1400, 850, PDF, "output.pdf");
+  XO = (width - (FRAME_W + 2*FRAME_THICK)*PPI)/2;
+  YO = (height - (FRAME_H + 2*FRAME_THICK)*PPI)/2;
   noLoop();
   randomSeed(0); // so we generate the same random painting each time.
   PImage mask = circles_mask(); // the circles pattern - just white circles on black background
@@ -57,7 +62,7 @@ void setup() {
 
 void draw() {
   draw_background();
-  image(picture, XO+MAT_W*PPI, YO+MAT_H*PPI);
+  image(picture, XO + (FRAME_THICK + MAT_W)*PPI, YO+ (FRAME_THICK + MAT_H)*PPI);
   save("output.JPEG");
   //exit();
 }
@@ -171,16 +176,26 @@ void hex_circles(PGraphics pg, int nw, int nh) {
 void draw_background() {
   // Render "wall"
   background(WALL_COLOR);
+  
+  float xOff = XO;
+  float yOff = YO;
 
   // Render frame (actually the whole rectangle)
   fill(FRAME_COLOR);
-
+  rect(xOff, yOff, (FRAME_W + 2*FRAME_THICK)*PPI, (FRAME_H + 2*FRAME_THICK)*PPI);
+  
   // Render the mat (whole rectangle)
-  rect(XO, XO, FRAME_W*PPI, FRAME_H*PPI); // including mat
+  xOff += FRAME_THICK*PPI;
+  yOff += FRAME_THICK*PPI;
+  
+  fill(MAT_COLOR);
+  rect(xOff, yOff, FRAME_W*PPI, FRAME_H*PPI); // including mat
 
   // Render the background for the circles
   fill(BACKDROP_COLOR);
-  rect(XO+MAT_W*PPI, YO+MAT_H*PPI, pic_wpx, pic_hpx); // internal black part
+  xOff += MAT_W*PPI;
+  yOff += MAT_H*PPI;
+  rect(xOff, yOff, pic_wpx, pic_hpx); // internal black part
 }
 
 
