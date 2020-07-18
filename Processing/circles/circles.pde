@@ -3,13 +3,14 @@ import processing.pdf.*;
 // CIRCLES - a pattern of lihter circles on a dark background.
 
 // These dimensions are all in inches
-final float FRAME_H = 16; // Inside height of frame
-final float FRAME_W = 24; // Inside width of frame
+final float FRAME_H = 24;//16; // Inside height of frame
+final float FRAME_W = 16;//24; // Inside width of frame
 final float MAT_W = 0.9;  // Width of vertical strips of mat
 final float MAT_H = MAT_W; // Height of horizontal strips of mat
-final float DIA = 2.4; // Circle dia (circle spacing is calculated)
-final int NW = 8;
-final int NH = 5;
+final float STRETCH_W = 1.0; // Amount to stretch gaps between circles in y direction
+final float DIA = 2.45; // Circle dia (circle spacing is calculated)
+final int NW = 5;//8;
+final int NH = 9;//5;
 float XO = 20, YO = 20;// offsets from window corner
 final float PPI = 50; // Pixels per inch when rendering image.
 final float pic_w = FRAME_W - 2*MAT_W; // width (inches) of visible part of picture (portion inside mat)
@@ -20,7 +21,8 @@ final int pic_hpx  = (int) (pic_h*PPI);// ""
 PImage picture; // Contains the visible part of picture.
 
 void setup() {
-  size(1400, 850);
+  //size(1400, 850);
+  size(850, 1400);
   //size(1400, 850, PDF, "output.pdf");
   noLoop();
   PImage mask = circles_mask(); // the circles pattern - just white circles on black background
@@ -114,9 +116,10 @@ void rect_grid(PGraphics pg, int nw, int nh, float space) {
 void hex_circles(PGraphics pg, int nw, int nh) {
   double gap = calc_gap(pic_w, DIA, nw); // space between circles - horizontal
   double dx = DIA + gap;
-  double dy = hex_row_dist(dx); // virtical distance is Sin(60) times horizontal for hex(triangle) grid.
+  double dy = hex_row_dist(dx) * STRETCH_W; // virtical distance is Sin(60) times horizontal for hex(triangle) grid.
   double x0 = DIA/2 + gap; // starting offsets...
-  double y0 = DIA/2 + gap;
+  double start_y_gap = (pic_h - (dy*(nh-1) + DIA))/2;
+  double y0 = DIA/2 + start_y_gap;
   for (int j = 0; j < nh; j++) {
     double xOff = 0;
     int nw1 = nw;
