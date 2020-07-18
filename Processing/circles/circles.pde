@@ -6,14 +6,15 @@ import processing.pdf.*;
 
 final float FRAME_H = 14;//24;//16; // Inside height of frame
 final float FRAME_W = 26;//16;//24; // Inside width of frame
+final float FRAME_THICK = 1; // Thickness of frame
 final float MAT_W = 1;  // Width of vertical strips of mat
 final float MAT_H = MAT_W; // Height of horizontal strips of mat
 final float STRETCH_W = 1.0; // Amount to stretch gaps between circles in y direction
 final float DIA = 2.5; // Circle dia (circle spacing is calculated)
 
 // For hex: NW = 5; NH = 9;
-final int NW = 8; //5;//8;
-final int NH = 6; //9;//5;
+final int NW = 9; //5;//8;
+final int NH = 5; //9;//5;
 float XO = 20, YO = 20;// offsets from window corner
 final float PPI = 90; // Pixels per inch when rendering image.
 final float pic_w = FRAME_W - 2*MAT_W; // width (inches) of visible part of picture (portion inside mat)
@@ -22,8 +23,21 @@ final int pic_wpx = (int) (pic_w*PPI); // width of above in pix
 final int pic_hpx  = (int) (pic_h*PPI);// ""
 
 // Colors
-final color MAPLE_COLOR = color(231, 185, 131);
-final color FRAME_COLOR = MAPLE_COLOR;
+// Some from https://rgbcolorcode.com/
+final color MAPLE = color(231, 185, 131);
+
+
+color RED = color(255, 100, 100);
+color YELLOW = color(255, 255, 100);
+color ORANGE = color(255, 165, 0);
+color CREAM = color(255, 253, 208);
+color DARK_OLIVE = color(85, 107, 47);
+color CHOCOLATE = color(128, 42, 0);
+color OXFORD_BLUE = color(0, 33, 71);
+color BLACK = color(0);
+final color FRAME_COLOR = CHOCOLATE; //MAPLE;
+final color WALL_COLOR = CREAM;
+final color BACKDROP_COLOR = OXFORD_BLUE;
 
 
 PImage picture; // Contains the visible part of picture.
@@ -34,6 +48,7 @@ void setup() {
   //size(850, 1400);
   //size(1400, 850, PDF, "output.pdf");
   noLoop();
+  randomSeed(0); // so we generate the same random painting each time.
   PImage mask = circles_mask(); // the circles pattern - just white circles on black background
   PImage painting = random_painting(); // rectangular random painting
   picture = make_picture(painting, mask); // circles painting!
@@ -65,31 +80,18 @@ PImage circles_mask() {
 // A random rectangular painting, composed of 
 // parts of circles of different colors.
 PImage random_painting() {
-  color red = color(255, 100, 100);
-  color yellow = color(255, 255, 100);
-  color orange = color(255, 165, 0);
-  color cream = color(255, 253, 208);
-  color[] all = {red, yellow, orange, cream};
+  color[] all_primary = {RED, YELLOW, ORANGE, CREAM};
+  color[] all_accents = {DARK_OLIVE, CHOCOLATE, BLACK};
   PGraphics pg = createGraphics(pic_wpx, pic_hpx);
   pg.beginDraw();
-  pg.fill(cream); // base color
+  pg.fill(CREAM); // base color
   pg.rect(0, 0, pic_wpx, pic_hpx);
 
-  // Random circles
-  for (int i = 0; i < 1000; i++) {
-    int c = all[(int) random(all.length)];
-    float x = random(pic_wpx);
-    float y = random(pic_hpx);
-    float r = random(pic_hpx/5);
-    boolean outline = random(1)> 0.5;
-    if (outline) {
-      pg.stroke(1);
-    } else {
-      pg.noStroke();
-    }
-    pg.fill(c);
-    pg.ellipse(x, y, r, r);
-  }
+  // Primary colors random shapes with larger dia
+  random_paint(pg, 1000, pic_hpx/5, all_primary);
+
+  // Accents -  smaller, from accents palette.
+  random_paint(pg, 100, pic_hpx/40, all_accents);
 
   pg.endDraw();
   PImage painting = new PImage(pg.width, pg.height);
@@ -98,6 +100,29 @@ PImage random_painting() {
   return painting;
 }
 
+
+// Draw {n} random circles, max radius {r}, randomly picking from {colors}.
+void random_paint(PGraphics pg, int n, double rMax, color[] colors) {
+  for (int i = 0; i < n; i++) {
+    int c = colors[(int) random(colors.length)];
+    float x = random(pic_wpx);
+    float y = random(pic_hpx);
+    float r = random((float)rMax);
+    boolean outline = random(1)> 0.5;
+    boolean rect = random(1) > 0.5;
+    if (outline) {
+      pg.stroke(1);
+    } else {
+      pg.noStroke();
+    }
+    pg.fill(c);
+    if (rect) {
+      pg.rect(x, y, r, r);
+    } else {
+      pg.ellipse(x, y, r, r);
+    }
+  }
+}
 
 // Composes the rectangular painting and the mask,
 // generating a set of circular pictures.
@@ -134,8 +159,8 @@ void hex_circles(PGraphics pg, int nw, int nh) {
     int nw1 = nw;
     // we offset every other row, and also reduce the count of circles in that row...
     if (j%2 == 0) {
-       xOff = dx/2;
-       nw1 = nw - 1;
+      xOff = dx/2;
+      nw1 = nw - 1;
     }   
     draw_row(pg, x0 + xOff, y0, dx, nw1);
     y0 += dy;
@@ -144,9 +169,17 @@ void hex_circles(PGraphics pg, int nw, int nh) {
 
 
 void draw_background() {
+  // Render "wall"
+  background(WALL_COLOR);
+
+  // Render frame (actually the whole rectangle)
   fill(FRAME_COLOR);
+
+  // Render the mat (whole rectangle)
   rect(XO, XO, FRAME_W*PPI, FRAME_H*PPI); // including mat
-  fill(0);
+
+  // Render the background for the circles
+  fill(BACKDROP_COLOR);
   rect(XO+MAT_W*PPI, YO+MAT_H*PPI, pic_wpx, pic_hpx); // internal black part
 }
 
