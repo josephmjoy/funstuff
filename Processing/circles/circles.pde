@@ -3,26 +3,32 @@ import processing.pdf.*;
 // CIRCLES - a pattern of lihter circles on a dark background.
 
 // These dimensions are all in inches
-final float FRAME_H = 16;//24;//16; // Inside height of frame
-final float FRAME_W = 24;//16;//24; // Inside width of frame
-final float MAT_W = 0.9;  // Width of vertical strips of mat
+final float FRAME_H = 14;//24;//16; // Inside height of frame
+final float FRAME_W = 26;//16;//24; // Inside width of frame
+final float MAT_W = 1;  // Width of vertical strips of mat
 final float MAT_H = MAT_W; // Height of horizontal strips of mat
 final float STRETCH_W = 1.0; // Amount to stretch gaps between circles in y direction
-final float DIA = 2.45; // Circle dia (circle spacing is calculated)
+final float DIA = 2.5; // Circle dia (circle spacing is calculated)
 // For hex: NW = 5; NH = 9;
 final int NW = 9; //5;//8;
 final int NH = 5; //9;//5;
 float XO = 20, YO = 20;// offsets from window corner
-final float PPI = 50; // Pixels per inch when rendering image.
+final float PPI = 90; // Pixels per inch when rendering image.
 final float pic_w = FRAME_W - 2*MAT_W; // width (inches) of visible part of picture (portion inside mat)
 final float pic_h = FRAME_H - 2*MAT_H; // height (inches) of visible part of picture
 final int pic_wpx = (int) (pic_w*PPI); // width of above in pix
 final int pic_hpx  = (int) (pic_h*PPI);// ""
 
+// Colors
+final color MAPLE_COLOR = color(231, 185, 131);
+final color FRAME_COLOR = MAPLE_COLOR;
+
+
 PImage picture; // Contains the visible part of picture.
 
 void setup() {
-  size(1400, 850);
+  //size(2000, 1000);
+  fullScreen();
   //size(850, 1400);
   //size(1400, 850, PDF, "output.pdf");
   noLoop();
@@ -136,7 +142,7 @@ void hex_circles(PGraphics pg, int nw, int nh) {
 
 
 void draw_background() {
-  fill(255, 255, 255);
+  fill(FRAME_COLOR);
   rect(XO, XO, FRAME_W*PPI, FRAME_H*PPI); // including mat
   fill(0);
   rect(XO+MAT_W*PPI, YO+MAT_H*PPI, pic_wpx, pic_hpx); // internal black part
