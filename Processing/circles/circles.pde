@@ -8,7 +8,8 @@ final float FRAME_W = 24; // Inside width of frame
 final float MAT_W = 0.9;  // Width of vertical strips of mat
 final float MAT_H = MAT_W; // Height of horizontal strips of mat
 final float DIA = 2.4; // Circle dia (circle spacing is calculated)
-
+final int NW = 8;
+final int NH = 5;
 float XO = 20, YO = 20;// offsets from window corner
 final float PPI = 50; // Pixels per inch when rendering image.
 final float pic_w = FRAME_W - 2*MAT_W; // width (inches) of visible part of picture (portion inside mat)
@@ -41,8 +42,8 @@ PImage circles_mask() {
   PGraphics pg = createGraphics(pic_wpx, pic_hpx);
   pg.beginDraw();
   pg.fill(0, 0, 255);
-  rect_grid(pg, 8, 5, 0.3);
-  //hex_circles(pg, 8, 5);
+  //rect_grid(pg, NW, NH, 0.3);
+  hex_circles(pg, NW, NH);
   pg.endDraw();
   PImage mask = new PImage(pg.width, pg.height);
   mask.set(0, 0, pg);
@@ -62,7 +63,7 @@ PImage random_painting() {
   pg.beginDraw();
   pg.fill(cream); // base color
   pg.rect(0, 0, pic_wpx, pic_hpx);
-  
+
   // Random circles
   for (int i = 0; i < 1000; i++) {
     int c = all[(int) random(all.length)];
@@ -70,7 +71,7 @@ PImage random_painting() {
     float y = random(pic_hpx);
     float r = random(pic_hpx/5);
     boolean outline = random(1)> 0.5;
-    if(outline) {
+    if (outline) {
       pg.stroke(1);
     } else {
       pg.noStroke();
@@ -78,7 +79,7 @@ PImage random_painting() {
     pg.fill(c);
     pg.ellipse(x, y, r, r);
   }
-  
+
   pg.endDraw();
   PImage painting = new PImage(pg.width, pg.height);
   painting.set(0, 0, pg);
@@ -98,11 +99,11 @@ PImage make_picture(PImage painting, PImage mask) {
 
 // Draw a rectangular grid of circles
 void rect_grid(PGraphics pg, int nw, int nh, float space) {
-   float normal = DIA/2+space;
-   float addon = DIA+space;
+  float normal = DIA/2+space;
+  float addon = DIA+space;
   draw_circle(pg, DIA/2+space, DIA/2+space);
-  for(int i = 1; i<=nh; i++){
-    for(int j = 1; j<=nw; j++){
+  for (int i = 1; i<=nh; i++) {
+    for (int j = 1; j<=nw; j++) {
       draw_circle(pg, normal + (addon*(j-1)), normal + (addon*(i-1)));
     }
   }
@@ -111,7 +112,22 @@ void rect_grid(PGraphics pg, int nw, int nh, float space) {
 // Draw rows of circles arranged on a hexagonal grid
 // Initial and last rows are one less.
 void hex_circles(PGraphics pg, int nw, int nh) {
-  draw_row(pg, 0, 0, DIA, 2);
+  double gap = calc_gap(pic_w, DIA, nw); // space between circles - horizontal
+  double dx = DIA + gap;
+  double dy = hex_row_dist(dx); // virtical distance is Sin(60) times horizontal for hex(triangle) grid.
+  double x0 = DIA/2 + gap; // starting offsets...
+  double y0 = DIA/2 + gap;
+  for (int j = 0; j < nh; j++) {
+    double xOff = 0;
+    int nw1 = nw;
+    // we offset every other row, and also reduce the count of circles in that row...
+    if (j%2 == 1) {
+       xOff = dx/2;
+       nw1 = nw - 1;
+    }   
+    draw_row(pg, x0 + xOff, y0, dx, nw1);
+    y0 += dy;
+  }
 }
 
 
@@ -146,10 +162,8 @@ double hex_row_dist(double center_dist) {
 
 // Draw {n} circles, centers starting at {(dx, yc)} and proceeding horizontally by {dx}.
 void draw_row(PGraphics pg, double xc, double yc, double dx, int n) {
-  double gap = calc_gap(pic_w, DIA, n);
-  draw_circle(pg, xc+DIA/2 + gap + gap, yc);
-  for(int i = 1; i<n; i++){
-    draw_circle(pg, xc+(DIA + gap)*i, yc);
+  for (int i = 0; i<n; i++) {
+    draw_circle(pg, xc + dx*i, yc);
   }
- // draw_circle(pg, xc, yc);
+  // draw_circle(pg, xc, yc);
 }
