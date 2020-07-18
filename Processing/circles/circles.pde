@@ -5,15 +5,15 @@ import processing.pdf.*;
 // These dimensions are all in inches
 
 final float FRAME_H = 16; //14;//24;//16; // Inside height of frame
-final float FRAME_W = 24; // 26;//16;//24; // Inside width of frame
+final float FRAME_W = 27; // 26;//16;//24; // Inside width of frame
 final float FRAME_THICK = 1; // Thickness of frame
 final float MAT_W = 1;  // Width of vertical strips of mat
 final float MAT_H = MAT_W; // Height of horizontal strips of mat
 final float DIA = 2.5; // Circle dia (circle spacing is calculated)
-final float EXTRA_SPACE_W = 0.5; // extra space around borders of patterns
+final float EXTRA_SPACE_W = 0.6; // extra space around borders of patterns
 
 // For hex: NW = 5; NH = 9;
-final int NW = 8; //5;//8;
+final int NW = 9;// 8; //5;//8;
 final int NH = 5; //9;//5;
 final float PPI = 70; // Pixels per inch when rendering image.
 final float pic_w = FRAME_W - 2*MAT_W; // width (inches) of visible part of picture (portion inside mat)
