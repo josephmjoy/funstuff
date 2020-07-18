@@ -1,10 +1,18 @@
 // CIRCLES - a pattern of lihter circles on a dark background.
+final float PPI = 50;
+final float frame_h = 16; // 16 inches
+final float frame_w = 24;
+final float mat_w = 1.0;
+final float mat_h = mat_w;
+final float back_w = frame_w - 2*mat_w;
+final float back_h = frame_h - 2*mat_h;
+float xo = 10;// pix
+float yo = 10;// pix
+float d = 2.4;
 
 
 final  int pic_w = 1700;
 final int pic_h = pic_w/2;
-float mat_w  = 50;
-int xo = 20, yo = 20;
 
 PImage picture;
 
@@ -29,7 +37,8 @@ PImage circles_mask() {
   pg.beginDraw();
   pg.fill(0, 0, 255);
   // For now, just a single disk!
-  pg.ellipse(pic_w/2, pic_h/2, 300, 300);
+  //pg.ellipse(pic_w/2, pic_h/2, 300, 300);
+  rect_grid(pg, 8, 5, 0.3);
   pg.endDraw();
   PImage mask = new PImage(pg.width, pg.height);
   mask.set(0, 0, pg);
@@ -83,10 +92,33 @@ PImage make_picture(PImage painting, PImage mask) {
   return pic;
 }
 
-// Render the dark background and mat
+// Draw a rectangular grid of circles
+void rect_grid(PGraphics pg, int nw, int nh, float space) {
+   float normal = d/2+space;
+   float addon = d+space;
+  draw_circle(pg, d/2+space, d/2+space);
+  for(int i = 1; i<=nh; i++){
+    for(int j = 1; j<=nw; j++){
+      draw_circle(pg, normal + (addon*(j-1)), normal + (addon*(i-1)));
+    }
+  }
+}
+
+
 void draw_background() {
-  fill(255,255,255);
-  rect(xo, yo, pic_w+2*mat_w, pic_h+2*mat_w);
+
+  fill(255, 255, 255);
+  rect(xo, xo, frame_w*PPI, frame_h*PPI); // including mat
   fill(0);
-  rect(xo+mat_w, yo+mat_w, pic_w, pic_h);
+  rect(xo+mat_w*PPI, yo+mat_h*PPI, back_w*PPI, back_h*PPI); // internal black part
+}
+
+
+// Draw circle mask
+void draw_circle(PGraphics pg, float x, float y) {
+  float px = x*PPI + xo + mat_w*PPI;
+  float py = y*PPI + yo + mat_h*PPI;
+  //pg.fill(255, 255*(float)Math.random(), 255*(float)Math.random());
+  pg.fill(0, 0, 255); // Just blue channel used for mask.
+  pg.ellipse(px, py, d*PPI, d*PPI);
 }
