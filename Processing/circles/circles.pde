@@ -9,8 +9,8 @@ final float FRAME_W = 24; // 26;//16;//24; // Inside width of frame
 final float FRAME_THICK = 1; // Thickness of frame
 final float MAT_W = 1;  // Width of vertical strips of mat
 final float MAT_H = MAT_W; // Height of horizontal strips of mat
-final float STRETCH_W = 1.0; // Amount to stretch gaps between circles in y direction
 final float DIA = 2.5; // Circle dia (circle spacing is calculated)
+final float EXTRA_SPACE_W = 0.5; // extra space around borders of patterns
 
 // For hex: NW = 5; NH = 9;
 final int NW = 8; //5;//8;
@@ -73,8 +73,8 @@ PImage circles_mask() {
   PGraphics pg = createGraphics(pic_wpx, pic_hpx);
   pg.beginDraw();
   pg.fill(0, 0, 255);
-  rect_grid(pg, NW, NH, 0.3);
-  //hex_circles(pg, NW, NH);
+  //rect_grid(pg, NW, NH, 0.3);
+  hex_circles(pg, NW, NH);
   pg.endDraw();
   PImage mask = new PImage(pg.width, pg.height);
   mask.set(0, 0, pg);
@@ -161,10 +161,10 @@ void rect_grid(PGraphics pg, int nw, int nh, float space) {
 // Draw rows of circles arranged on a hexagonal grid
 // Initial and last rows are one less.
 void hex_circles(PGraphics pg, int nw, int nh) {
-  double gap = calc_gap(pic_w, DIA, nw); // space between circles - horizontal
+  double gap = calc_gap(pic_w- 2*EXTRA_SPACE_W, DIA, nw); // space between circles - horizontal
   double dx = DIA + gap;
-  double dy = hex_row_dist(dx) * STRETCH_W; // virtical distance is Sin(60) times horizontal for hex(triangle) grid.
-  double x0 = DIA/2 + gap; // starting offsets...
+  double dy = hex_row_dist(dx); // virtical distance is Sin(60) times horizontal for hex(triangle) grid.
+  double x0 = EXTRA_SPACE_W + DIA/2 + gap; // starting offsets...
   double start_y_gap = (pic_h - (dy*(nh-1) + DIA))/2;
   double y0 = DIA/2 + start_y_gap;
   for (int j = 0; j < nh; j++) {
