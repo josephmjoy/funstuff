@@ -1,23 +1,26 @@
+import processing.pdf.*;
+
 // CIRCLES - a pattern of lihter circles on a dark background.
-final float PPI = 50;
-final float frame_h = 16; // 16 inches
-final float frame_w = 24;
-final float mat_w = 1.0;
-final float mat_h = mat_w;
-final float back_w = frame_w - 2*mat_w;
-final float back_h = frame_h - 2*mat_h;
-float xo = 10;// pix
-float yo = 10;// pix
-float d = 2.4;
 
+// These dimensions are all in inches
+final float FRAME_H = 16; // Inside height of frame
+final float FRAME_W = 24; // Inside width of frame
+final float MAT_W = 0.9;  // Width of vertical strips of mat
+final float MAT_H = MAT_W; // Height of horizontal strips of mat
+final float DIA = 2.4; // Circle dia (circle spacing is calculated)
 
-final  int pic_w = 1700;
-final int pic_h = pic_w/2;
+float XO = 20, YO = 20;// offsets from window corner
+final float PPI = 50; // Pixels per inch when rendering image.
+final float pic_w = FRAME_W - 2*MAT_W; // width (inches) of visible part of picture (portion inside mat)
+final float pic_h = FRAME_H - 2*MAT_H; // height (inches) of visible part of picture
+final int pic_wpx = (int) (pic_w*PPI); // width of above in pix
+final int pic_hpx  = (int) (pic_h*PPI);// ""
 
-PImage picture;
+PImage picture; // Contains the visible part of picture.
 
 void setup() {
-  size(2000, 1000);
+  size(1400, 850);
+  //size(1400, 850, PDF, "output.pdf");
   noLoop();
   PImage mask = circles_mask(); // the circles pattern - just white circles on black background
   PImage painting = random_painting(); // rectangular random painting
@@ -27,17 +30,17 @@ void setup() {
 
 void draw() {
   draw_background();
-  image(picture, xo+mat_w, yo+mat_w);
+  image(picture, XO+MAT_W*PPI, YO+MAT_H*PPI);
+  save("output.JPEG");
+  //exit();
 }
 
 // Mask image - multiple disks on black background.
 // (Blue channel interpreted as alpha channel.)
 PImage circles_mask() {
-  PGraphics pg = createGraphics(pic_w, pic_h);
+  PGraphics pg = createGraphics(pic_wpx, pic_hpx);
   pg.beginDraw();
   pg.fill(0, 0, 255);
-  // For now, just a single disk!
-  //pg.ellipse(pic_w/2, pic_h/2, 300, 300);
   rect_grid(pg, 8, 5, 0.3);
   pg.endDraw();
   PImage mask = new PImage(pg.width, pg.height);
@@ -54,17 +57,17 @@ PImage random_painting() {
   color orange = color(255, 165, 0);
   color cream = color(255, 253, 208);
   color[] all = {red, yellow, orange, cream};
-  PGraphics pg = createGraphics(pic_w, pic_h);
+  PGraphics pg = createGraphics(pic_wpx, pic_hpx);
   pg.beginDraw();
   pg.fill(cream); // base color
-  pg.rect(0, 0, pic_w, pic_h);
+  pg.rect(0, 0, pic_wpx, pic_hpx);
   
   // Random circles
   for (int i = 0; i < 1000; i++) {
     int c = all[(int) random(all.length)];
-    float x = random(pic_w);
-    float y = random(pic_h);
-    float r = random(pic_h/5);
+    float x = random(pic_wpx);
+    float y = random(pic_hpx);
+    float r = random(pic_hpx/5);
     boolean outline = random(1)> 0.5;
     if(outline) {
       pg.stroke(1);
@@ -94,9 +97,9 @@ PImage make_picture(PImage painting, PImage mask) {
 
 // Draw a rectangular grid of circles
 void rect_grid(PGraphics pg, int nw, int nh, float space) {
-   float normal = d/2+space;
-   float addon = d+space;
-  draw_circle(pg, d/2+space, d/2+space);
+   float normal = DIA/2+space;
+   float addon = DIA+space;
+  draw_circle(pg, DIA/2+space, DIA/2+space);
   for(int i = 1; i<=nh; i++){
     for(int j = 1; j<=nw; j++){
       draw_circle(pg, normal + (addon*(j-1)), normal + (addon*(i-1)));
@@ -108,17 +111,34 @@ void rect_grid(PGraphics pg, int nw, int nh, float space) {
 void draw_background() {
 
   fill(255, 255, 255);
-  rect(xo, xo, frame_w*PPI, frame_h*PPI); // including mat
+  rect(XO, XO, FRAME_W*PPI, FRAME_H*PPI); // including mat
   fill(0);
-  rect(xo+mat_w*PPI, yo+mat_h*PPI, back_w*PPI, back_h*PPI); // internal black part
+  rect(XO+MAT_W*PPI, YO+MAT_H*PPI, pic_wpx, pic_hpx); // internal black part
 }
 
 
 // Draw circle mask
-void draw_circle(PGraphics pg, float x, float y) {
-  float px = x*PPI + xo + mat_w*PPI;
-  float py = y*PPI + yo + mat_h*PPI;
+void draw_circle(PGraphics pg, double x, double y) {
+  double px = x*PPI ;//+ XO + MAT_W*PPI;
+  double py = y*PPI ;//+ YO + MAT_H*PPI;
   //pg.fill(255, 255*(float)Math.random(), 255*(float)Math.random());
   pg.fill(0, 0, 255); // Just blue channel used for mask.
-  pg.ellipse(px, py, d*PPI, d*PPI);
+  pg.ellipse((float)px, (float)py, DIA*PPI, DIA*PPI);
+}
+
+// Gap between {n} circles of diameter {dia}
+// evenly spaced across width {span} - with space on
+// both ends.
+double calc_gap(double span, double dia, int n) {
+  return (span - n*dia) / (n + 1);
+}
+
+// Vertical distance between centers of rows given horizontal distance between
+// circle centers in hexagonal grid.
+double hex_row_dist(double center_dist) {
+  return Math.sqrt(3.0)/2; // center_dist * sin(60)
+}
+
+// Draw {n} circles, centers starting at {(dx, yc)} and proceeding horizontally by {dx}.
+void draw_row(PGraphics pg, double xc, double yc, double dx, int n) {
 }
