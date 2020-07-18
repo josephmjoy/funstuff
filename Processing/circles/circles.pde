@@ -176,18 +176,18 @@ void hex_circles(PGraphics pg, int nw, int nh) {
 void draw_background() {
   // Render "wall"
   background(WALL_COLOR);
-  
+
   float xOff = XO;
   float yOff = YO;
 
   // Render frame (actually the whole rectangle)
   fill(FRAME_COLOR);
   rect(xOff, yOff, (FRAME_W + 2*FRAME_THICK)*PPI, (FRAME_H + 2*FRAME_THICK)*PPI);
-  
+
   // Render the mat (whole rectangle)
   xOff += FRAME_THICK*PPI;
   yOff += FRAME_THICK*PPI;
-  
+
   fill(MAT_COLOR);
   rect(xOff, yOff, FRAME_W*PPI, FRAME_H*PPI); // including mat
 
@@ -207,6 +207,14 @@ void draw_circle(PGraphics pg, double x, double y) {
   pg.ellipse((float)px, (float)py, DIA*PPI, DIA*PPI);
 }
 
+// Draw hexagonal mask
+void draw_hexagon(PGraphics pg, double x, double y) {
+  double px = x*PPI ;//+ XO + MAT_W*PPI;
+  double py = y*PPI ;//+ YO + MAT_H*PPI;
+  pg.fill(0, 0, 255); // Just blue channel used for mask.
+  polygon(pg, (float)px, (float)py, DIA*PPI/2*1.1, 6); // 1.1 (trial-and-error) to make it comparable with circle
+}
+
 // Gap between {n} circles of diameter {dia}
 // evenly spaced across width {span} - with space on
 // both ends.
@@ -223,7 +231,24 @@ double hex_row_dist(double center_dist) {
 // Draw {n} circles, centers starting at {(dx, yc)} and proceeding horizontally by {dx}.
 void draw_row(PGraphics pg, double xc, double yc, double dx, int n) {
   for (int i = 0; i<n; i++) {
-    draw_circle(pg, xc + dx*i, yc);
+    if (random(1) < 0.5) {
+      draw_circle(pg, xc + dx*i, yc);
+    } else {
+      draw_hexagon(pg, xc + dx*i, yc);
+    }
   }
   // draw_circle(pg, xc, yc);
+}
+
+// (from processing example https://processing.org/examples/regularpolygon.html)
+void polygon(PGraphics pg, float x, float y, float radius, int npoints) {
+  float angle = TWO_PI / npoints;
+  float offset = PI/6;
+  pg.beginShape();
+  for (float a = offset; a < TWO_PI+offset; a += angle) {
+    float sx = x + cos(a) * radius;
+    float sy = y + sin(a) * radius;
+    pg.vertex(sx, sy);
+  }
+  pg.endShape(CLOSE);
 }
