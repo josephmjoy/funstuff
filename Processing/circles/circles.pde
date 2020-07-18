@@ -4,8 +4,8 @@ import processing.pdf.*;
 
 // These dimensions are all in inches
 
-final float FRAME_H = 14;//24;//16; // Inside height of frame
-final float FRAME_W = 26;//16;//24; // Inside width of frame
+final float FRAME_H = 16; //14;//24;//16; // Inside height of frame
+final float FRAME_W = 24; // 26;//16;//24; // Inside width of frame
 final float FRAME_THICK = 1; // Thickness of frame
 final float MAT_W = 1;  // Width of vertical strips of mat
 final float MAT_H = MAT_W; // Height of horizontal strips of mat
@@ -13,7 +13,7 @@ final float STRETCH_W = 1.0; // Amount to stretch gaps between circles in y dire
 final float DIA = 2.5; // Circle dia (circle spacing is calculated)
 
 // For hex: NW = 5; NH = 9;
-final int NW = 9; //5;//8;
+final int NW = 8; //5;//8;
 final int NH = 5; //9;//5;
 final float PPI = 70; // Pixels per inch when rendering image.
 final float pic_w = FRAME_W - 2*MAT_W; // width (inches) of visible part of picture (portion inside mat)
@@ -73,8 +73,8 @@ PImage circles_mask() {
   PGraphics pg = createGraphics(pic_wpx, pic_hpx);
   pg.beginDraw();
   pg.fill(0, 0, 255);
-  //rect_grid(pg, NW, NH, 0.3);
-  hex_circles(pg, NW, NH);
+  rect_grid(pg, NW, NH, 0.3);
+  //hex_circles(pg, NW, NH);
   pg.endDraw();
   PImage mask = new PImage(pg.width, pg.height);
   mask.set(0, 0, pg);
@@ -138,18 +138,26 @@ PImage make_picture(PImage painting, PImage mask) {
   return pic;
 }
 
+
 // Draw a rectangular grid of circles
 void rect_grid(PGraphics pg, int nw, int nh, float space) {
-  float normal = DIA/2+space;
-  float addon = DIA+space;
+  double gap = calc_gap(pic_w, DIA, nw); // space between circles - horizontal
+  double dx = DIA + gap;
+  double dy = dx;
+  double x0 = DIA/2 + gap; // starting offsets...
+  double start_y_gap = (pic_h - (dy*(nh-1) + DIA))/2;
+  double y0 = DIA/2 + start_y_gap;
+  
+  double normal = x0; // DIA/2+space;
+  double normaly = y0;
+  double addon = dx; //DIA+space;
   draw_circle(pg, DIA/2+space, DIA/2+space);
   for (int i = 1; i<=nh; i++) {
     for (int j = 1; j<=nw; j++) {
-      draw_circle(pg, normal + (addon*(j-1)), normal + (addon*(i-1)));
+      draw_circle(pg, normal + (addon*(j-1)), normaly + (addon*(i-1)));
     }
   }
 }
-
 // Draw rows of circles arranged on a hexagonal grid
 // Initial and last rows are one less.
 void hex_circles(PGraphics pg, int nw, int nh) {
