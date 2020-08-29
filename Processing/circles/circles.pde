@@ -191,13 +191,24 @@ void rect_grid(PGraphics pg, int nw, int nh) {
   println(String.format("Outside gaps (x, y): %.2fin, %.2fin%s", start_gap, start_y_gap, pout));
   println(String.format(" Inside gaps (x, y): %.2fin, %.2fin%s", gap, gap*VGAP_SCALE, pin));
 
-
-  //double normal = x0;
-  //double normaly = y0;
   for (int i = 1; i<=nh; i++) { 
     for (int j = 1; j<=nw; j++) {
       draw_circle(pg, x0 + (dx*(j-1)), y0 + (dy*(i-1)));
     }
+  }
+
+  if (MAKE_TEMPLATE) {
+    // We'll add horizontal and vertical lines through the circle centers.
+    for (int i = 1; i<=nh; i++) {
+      float y  = (float) (y0 + (dy*(i-1)));
+      pg.line(0, y*PPI, pg.width, y*PPI); // horizontal line
+    }
+
+    for (int j = 1; j<=nw; j++) {
+      float x  = (float) (x0 + (dx*(j-1)));
+      pg.line(x*PPI, 0, x*PPI, pg.height); // vertical line
+    }
+
   }
 }
 
@@ -324,7 +335,11 @@ PImage make_template() {
   } else {
     rect_grid(pg, NW, NH);
   }
-
+  // Let's draw a rectangle around the boundary.
+  pg.noFill();
+  //pg.stroke(0);
+  //pg.strokeWeight(4);
+  pg.rect(0, 0, pg.width-1, pg.height-1);
   pg.endDraw();
   PImage img = new PImage(pg.width, pg.height);
   img.set(0, 0, pg);
@@ -352,11 +367,6 @@ void multipage_write_image(PImage source) {
 
   // Find out number of tiles needed. Note that the part for the last column (row)
   // will likely only fill a fraction of the page width (height)
-
-  /*
-  int nx = (int) (scaled_source.width / page_width_pix + 0.99);
-   int ny = (int) (scaled_source.height / page_height_pix + 0.99);
-   */
 
   PGraphicsPDF pdf = (PGraphicsPDF) createGraphics((int)page_width_pix, (int)page_height_pix, PDF, "multipage.pdf");
   pdf.beginDraw();
