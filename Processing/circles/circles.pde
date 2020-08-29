@@ -4,18 +4,24 @@ import processing.pdf.*;
 
 // These dimensions are all in inches
 
-final float FRAME_H = 16; //14;//24;//16; // Inside height of frame
-final float FRAME_W = 27; // 26;//16;//24; // Inside width of frame
+final float FRAME_H = 16; //16; //14;//24;//16; // Inside height of frame
+final float FRAME_W = 24; //27; // 26;//16;//24; // Inside width of frame
 final float FRAME_THICK = 1; // Thickness of frame
-final float MAT_W = 1;  // Width of vertical strips of mat
+final float MAT_W = 0;  // Width of vertical strips of mat
 final float MAT_H = MAT_W; // Height of horizontal strips of mat
 final float DIA = 2.5; // Circle dia (circle spacing is calculated)
-final float EXTRA_SPACE_W = 0.6; // extra space around borders of patterns
+final float OUTSIDE_SPACE_W = 1; // space around borders of patterns, but inside the mat. If -ve, it is same as inside gap
+final float VGAP_SCALE = 1.1; // Gap aspect ratio. 2.0 == vertical gap is twice horizontal gap.
+final boolean HEX_GRID = false; // If false: rectangular grid; If true: hexagonal grid
+final boolean MAKE_TEMPLATE = false; // Make a multipage PDF template doc.
 
-// For hex: NW = 5; NH = 9;
-final int NW = 9;// 8; //5;//8;
-final int NH = 5; //9;//5;
-final float PPI = 70; // Pixels per inch when rendering image.
+final int HEX_NW = 9;
+final int HEX_NH = 5;
+final int RECT_NW = 8;
+final int RECT_NH = 5;
+final int NW = HEX_GRID ? HEX_NW : RECT_NW;
+final int NH = HEX_GRID ? HEX_NH : RECT_NH;
+final float PPI = 72; // Pixels per inch when rendering image.
 final float pic_w = FRAME_W - 2*MAT_W; // width (inches) of visible part of picture (portion inside mat)
 final float pic_h = FRAME_H - 2*MAT_H; // height (inches) of visible part of picture
 final int pic_wpx = (int) (pic_w*PPI); // width of above in pix
@@ -39,7 +45,7 @@ color WHITE = color(255);
 final color WALL_COLOR = CREAM;
 final color FRAME_COLOR = MAPLE;
 final color MAT_COLOR = WHITE;
-final color BACKDROP_COLOR = OXFORD_BLUE;
+final color BACKDROP_COLOR = BLACK;
 
 
 PImage picture; // Contains the visible part of picture.
@@ -57,6 +63,11 @@ void setup() {
   PImage mask = circles_mask(); // the circles pattern - just white circles on black background
   PImage painting = random_painting(); // rectangular random painting
   picture = make_picture(painting, mask); // circles painting!
+
+  if (MAKE_TEMPLATE) {
+    PImage template = make_template();
+    multipage_write_image(template);
+  }
 }
 
 
@@ -72,15 +83,20 @@ void draw() {
 PImage circles_mask() {
   PGraphics pg = createGraphics(pic_wpx, pic_hpx);
   pg.beginDraw();
-  pg.fill(0, 0, 255);
-  //rect_grid(pg, NW, NH, 0.3);
-  hex_circles(pg, NW, NH);
+  pg.fill(0, 0, 255); // Just blue channel used for mask.
+  if (HEX_GRID) {
+    hex_circles(pg, NW, NH);
+  } else {
+    rect_grid(pg, NW, NH);
+  }
+
   pg.endDraw();
   PImage mask = new PImage(pg.width, pg.height);
   mask.set(0, 0, pg);
   pg.dispose();
   return mask;
 }
+
 
 // A random rectangular painting, composed of 
 // parts of circles of different colors.
@@ -129,6 +145,7 @@ void random_paint(PGraphics pg, int n, double rMax, color[] colors) {
   }
 }
 
+
 // Composes the rectangular painting and the mask,
 // generating a set of circular pictures.
 PImage make_picture(PImage painting, PImage mask) {
@@ -139,32 +156,67 @@ PImage make_picture(PImage painting, PImage mask) {
 }
 
 
-// Draw a rectangular grid of circles
-void rect_grid(PGraphics pg, int nw, int nh, float space) {
-  double gap = calc_gap(pic_w, DIA, nw); // space between circles - horizontal
+// Draw a rectangular grid of circles.
+// Does NOT set fill and stroke colors or weights.
+void rect_grid(PGraphics pg, int nw, int nh) {
+  boolean auto_outside_space = OUTSIDE_SPACE_W < 0;
+  double gap, start_gap;
+  if (auto_outside_space) {
+    gap = calc_gap(pic_w, DIA, nw, true); // space between circles - horizontal
+    start_gap = gap;
+  } else {
+    gap = calc_gap(pic_w - 2*OUTSIDE_SPACE_W, DIA, nw, false); // space between circles - horizontal
+    start_gap = OUTSIDE_SPACE_W;
+  }
+
   double dx = DIA + gap;
-  double dy = dx;
-  double x0 = DIA/2 + gap; // starting offsets...
+  double x0 = DIA/2 + start_gap; // starting offsets...
+
+  double dy = DIA + gap*VGAP_SCALE;
   double start_y_gap = (pic_h - (dy*(nh-1) + DIA))/2;
   double y0 = DIA/2 + start_y_gap;
-  
-  double normal = x0; // DIA/2+space;
-  double normaly = y0;
-  double addon = dx; //DIA+space;
-  draw_circle(pg, DIA/2+space, DIA/2+space);
-  for (int i = 1; i<=nh; i++) {
+
+  // Compute the percentage difference betwwen horizontal and vertical
+  // outside (start) gaps, and the same with inside gaps.
+  String pout = "";
+  String pin = "";
+  //Note: the checks avoid printing uselessly large percentages and div by zero
+  if (Math.abs(start_gap) > 0.01) {
+    pout = " (" + (int) (100*Math.abs((start_y_gap - start_gap)/start_gap)) + "%)";
+  }
+  if (Math.abs(gap) > 0.01) { 
+    pin = " (" + (int) (100*Math.abs((gap - gap*VGAP_SCALE) / gap)) + "%)";
+  }
+
+  println(String.format("Outside gaps (x, y): %.2fin, %.2fin%s", start_gap, start_y_gap, pout));
+  println(String.format(" Inside gaps (x, y): %.2fin, %.2fin%s", gap, gap*VGAP_SCALE, pin));
+
+
+  //double normal = x0;
+  //double normaly = y0;
+  for (int i = 1; i<=nh; i++) { 
     for (int j = 1; j<=nw; j++) {
-      draw_circle(pg, normal + (addon*(j-1)), normaly + (addon*(i-1)));
+      draw_circle(pg, x0 + (dx*(j-1)), y0 + (dy*(i-1)));
     }
   }
 }
+
+
 // Draw rows of circles arranged on a hexagonal grid
 // Initial and last rows are one less.
 void hex_circles(PGraphics pg, int nw, int nh) {
-  double gap = calc_gap(pic_w- 2*EXTRA_SPACE_W, DIA, nw); // space between circles - horizontal
+  boolean auto_outside_space = OUTSIDE_SPACE_W < 0;
+  double gap, start_gap;
+  if (auto_outside_space) {
+    gap = calc_gap(pic_w, DIA, nw, true); // space between circles - horizontal
+    start_gap = gap;
+  } else {
+    gap = calc_gap(pic_w - 2*OUTSIDE_SPACE_W, DIA, nw, false); // space between circles - horizontal
+    start_gap = OUTSIDE_SPACE_W;
+  }
   double dx = DIA + gap;
   double dy = hex_row_dist(dx); // virtical distance is Sin(60) times horizontal for hex(triangle) grid.
-  double x0 = EXTRA_SPACE_W + DIA/2 + gap; // starting offsets...
+  double x0 = DIA/2 + start_gap; // starting offsets...
   double start_y_gap = (pic_h - (dy*(nh-1) + DIA))/2;
   double y0 = DIA/2 + start_y_gap;
   for (int j = 0; j < nh; j++) {
@@ -211,7 +263,6 @@ void draw_background() {
 void draw_circle(PGraphics pg, double x, double y) {
   double px = x*PPI ;//+ XO + MAT_W*PPI;
   double py = y*PPI ;//+ YO + MAT_H*PPI;
-  pg.fill(0, 0, 255); // Just blue channel used for mask.
   pg.ellipse((float)px, (float)py, DIA*PPI, DIA*PPI);
 }
 
@@ -219,15 +270,16 @@ void draw_circle(PGraphics pg, double x, double y) {
 void draw_hexagon(PGraphics pg, double x, double y) {
   double px = x*PPI ;//+ XO + MAT_W*PPI;
   double py = y*PPI ;//+ YO + MAT_H*PPI;
-  pg.fill(0, 0, 255); // Just blue channel used for mask.
   polygon(pg, (float)px, (float)py, DIA*PPI/2*1.1, 6); // 1.1 (trial-and-error) to make it comparable with circle
 }
 
 // Gap between {n} circles of diameter {dia}
-// evenly spaced across width {span} - with space on
+// evenly spaced across width {span}.
+// {outsideSpace} if true: include space on
 // both ends.
-double calc_gap(double span, double dia, int n) {
-  return (span - n*dia) / (n + 1);
+double calc_gap(double span, double dia, int n, boolean outsideSpace) {
+  int delta = outsideSpace ? 1 : -1;
+  return (span - n*dia) / (n + delta);
 }
 
 // Vertical distance between centers of rows given horizontal distance between
@@ -259,4 +311,54 @@ void polygon(PGraphics pg, float x, float y, float radius, int npoints) {
     pg.vertex(sx, sy);
   }
   pg.endShape(CLOSE);
+}
+
+
+// Make a positioning template.
+PImage make_template() {
+  PGraphics pg = createGraphics(pic_wpx, pic_hpx);
+  pg.beginDraw();
+  pg.background(255);
+  if (HEX_GRID) {
+    hex_circles(pg, NW, NH);
+  } else {
+    rect_grid(pg, NW, NH);
+  }
+
+  pg.endDraw();
+  PImage img = new PImage(pg.width, pg.height);
+  img.set(0, 0, pg);
+  pg.dispose();
+  return img;
+}
+
+
+// Tiles the image over multiple 81/2x11 pages, saved
+// as a multi-page PDF doc that should be printed without scaling.
+// They should be assembled by placing pages side-by-side- with zero
+// overlap. There will be some printing lost because it's close to the 
+// edge of the paper. Not a big deal. This way we do not need to try
+// to carefully overlap pages.
+// Output file is 'multipage.pdf'.
+// Assumes PDF write ppi is 72.
+void multipage_write_image(PImage img) {
+  final float OUTPUT_PPI = 72;
+  assert(abs(PPI-OUTPUT_PPI)<0.1); // they should be the same; we don't scale.
+  float page_width_in = 8.5;
+  float page_height_in = 11;
+  float page_width_pix = page_width_in * OUTPUT_PPI;
+  float page_height_pix = page_height_in * OUTPUT_PPI;
+
+  // Find out number of tiles needed.
+  int nx = (int) (img.width / page_width_pix + 0.99);
+  int ny = (int) (img.height / page_height_pix + 0.99);
+
+  PGraphicsPDF pdf = (PGraphicsPDF) createGraphics((int)page_width_pix, (int)page_height_pix, PDF, "multipage.pdf");
+  pdf.beginDraw();
+  pdf.image(img, 0, 0);
+  pdf.line(50, 50, 250, 250);
+  pdf.nextPage();
+  pdf.image(img, 50, 50);
+  pdf.dispose();
+  pdf.endDraw();
 }
