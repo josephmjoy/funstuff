@@ -4,13 +4,13 @@ import processing.pdf.*;
 
 // These dimensions are all in inches
 
-final float FRAME_H = 16; //16; //14;//24;//16; // Inside height of frame
-final float FRAME_W = 24; //27; // 26;//16;//24; // Inside width of frame
+final float FRAME_H = 15.5; // 16; // 14; // Inside height of frame
+final float FRAME_W = 23.5; //24; //27; // Inside width of frame
 final float FRAME_THICK = 1; // Thickness of frame
 final float MAT_W = 0;  // Width of vertical strips of mat
 final float MAT_H = MAT_W; // Height of horizontal strips of mat
 final float DIA = 2.5; // Circle dia (circle spacing is calculated)
-final float OUTSIDE_SPACE_W = 1; // space around borders of patterns, but inside the mat. If -ve, it is same as inside gap
+final float OUTSIDE_SPACE_W = 0.75; // space around borders of patterns, but inside the mat. If -ve, it is same as inside gap
 final float VGAP_SCALE = 1.1; // Gap aspect ratio. 2.0 == vertical gap is twice horizontal gap.
 final boolean HEX_GRID = false; // If false: rectangular grid; If true: hexagonal grid
 final boolean MAKE_TEMPLATE = true; // Make a multipage PDF template doc.
