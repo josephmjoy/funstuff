@@ -13,7 +13,7 @@ final float DIA = 2.5; // Circle dia (circle spacing is calculated)
 final float OUTSIDE_SPACE_W = 1; // space around borders of patterns, but inside the mat. If -ve, it is same as inside gap
 final float VGAP_SCALE = 1.1; // Gap aspect ratio. 2.0 == vertical gap is twice horizontal gap.
 final boolean HEX_GRID = false; // If false: rectangular grid; If true: hexagonal grid
-final boolean MAKE_TEMPLATE = false; // Make a multipage PDF template doc.
+final boolean MAKE_TEMPLATE = true; // Make a multipage PDF template doc.
 
 final int HEX_NW = 9;
 final int HEX_NH = 5;
@@ -341,24 +341,50 @@ PImage make_template() {
 // to carefully overlap pages.
 // Output file is 'multipage.pdf'.
 // Assumes PDF write ppi is 72.
-void multipage_write_image(PImage img) {
+void multipage_write_image(PImage source) {
   final float OUTPUT_PPI = 72;
-  assert(abs(PPI-OUTPUT_PPI)<0.1); // they should be the same; we don't scale.
+  assert(abs(PPI-OUTPUT_PPI)<0.1); // they should be the same; we don't scale. IF we need to we can re-scale.
+  PImage scaled_source = source; // scaled_source has a PPI of exactly OUTPUT_PPI, the PPI at which the PDF file is written.
   float page_width_in = 8.5;
   float page_height_in = 11;
-  float page_width_pix = page_width_in * OUTPUT_PPI;
-  float page_height_pix = page_height_in * OUTPUT_PPI;
+  int page_width_pix = (int) (page_width_in * OUTPUT_PPI);
+  int page_height_pix = (int) (page_height_in * OUTPUT_PPI);
 
-  // Find out number of tiles needed.
-  int nx = (int) (img.width / page_width_pix + 0.99);
-  int ny = (int) (img.height / page_height_pix + 0.99);
+  // Find out number of tiles needed. Note that the part for the last column (row)
+  // will likely only fill a fraction of the page width (height)
+
+  /*
+  int nx = (int) (scaled_source.width / page_width_pix + 0.99);
+   int ny = (int) (scaled_source.height / page_height_pix + 0.99);
+   */
 
   PGraphicsPDF pdf = (PGraphicsPDF) createGraphics((int)page_width_pix, (int)page_height_pix, PDF, "multipage.pdf");
   pdf.beginDraw();
-  pdf.image(img, 0, 0);
-  pdf.line(50, 50, 250, 250);
-  pdf.nextPage();
-  pdf.image(img, 50, 50);
+  pdf.textSize(32);
+  int y_pixels_left = scaled_source.height;
+
+  for (int row = 0; y_pixels_left > 0; row++, y_pixels_left -= page_height_pix) {   
+    int x_pixels_left = scaled_source.width;
+    int dy = min(y_pixels_left, page_height_pix);
+    for (int col = 0; x_pixels_left > 0; col++, x_pixels_left -= page_width_pix) {
+      if (row > 0 || col > 0) {
+        pdf.nextPage();
+      }
+      assert(row * col < 10); // Don't want too many pages!
+      int x = col * page_width_pix;
+      int y = row * page_height_pix;
+      int dx = min(x_pixels_left, page_width_pix);
+
+      // Pick up part of the source image that goes on this PDF page
+      PImage part = source.get(x, y, dx, dy);
+      pdf.image(part, 0, 0);
+
+      // Add the page label
+      String pageCaption = String.format("(%d, %d)", row+1, col+1);
+      pdf.fill(0);
+      pdf.text(pageCaption, 0.5*OUTPUT_PPI, 1.0*OUTPUT_PPI);
+    }
+  }
   pdf.dispose();
   pdf.endDraw();
 }
