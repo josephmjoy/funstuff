@@ -1,4 +1,9 @@
 import processing.svg.*; //<>//
+
+final float SVG_DPI = 96; // this comes from the CSS Specification.
+
+
+
 PGraphics svg = null;
 enum Corner {
   NE, NW, SE, SW
@@ -18,28 +23,40 @@ void draw() {
   svg.beginDraw();
   svg.background(255);
 
-  float xOr = 50, yOr = 50;
-  float xSize = 500, ySize = 500;
-  float r = 20;
-  
+  // Units are inch ...
+  float xOr, yOr;
+  xOr = yOr = 0.5;
+  float xSize, ySize;
+  xSize = ySize = 2.5;
+  float r = 0.125;
+
   svg.noFill();
   svg.stroke(255, 0, 0); // Red == cut
-  svg.rect(xOr, yOr, xSize, ySize);
+  //svg.rect(xOr, yOr, xSize, ySize);
+  drawSide(svg, xOr, yOr, xOr+xSize, yOr, r); // N
+  drawSide(svg, xOr + xSize, yOr, xOr+xSize, yOr + ySize, r); // E
+  drawSide(svg, xOr, yOr + ySize, xOr+xSize, yOr + ySize, r); // S
+  drawSide(svg, xOr, yOr, xOr, yOr + ySize, r); // W
   drawCorner(svg, xOr + xSize, yOr, r, Corner.NE);
   drawCorner(svg, xOr, yOr, r, Corner.NW);
   drawCorner(svg, xOr + xSize, yOr + ySize, r, Corner.SE);
   drawCorner(svg, xOr, yOr + ySize, r, Corner.SW);
-  
+
   // Now text:
   PFont myFont = createFont("Cooper Black", 32);
   svg.textFont(myFont);
+  //svg.textSize(48);
   svg.fill(0);
-  svg.text("23", xOr+xSize/2, yOr+ySize/2+2);
-  
+  drawText(svg, "23", xOr+xSize/2, yOr+ySize/2);
+
   svg.endDraw();
-  
+
   //set(10, 10, svg);
   svg.dispose();
+}
+
+float pix(float in) {
+  return in * SVG_DPI;
 }
 
 /**
@@ -74,5 +91,27 @@ void drawCorner(PGraphics pg, float x, float y, float r, Corner c) {
     break;
   }
   end = start + PI/2;
-  pg.arc(cx, cy, 2*r, 2*r, start, end);
+  pg.arc(pix(cx), pix(cy), pix(2*r), pix(2*r), start, end);
+}
+
+/**
+ Draw the side from (x1, y1) to (x2, y2), but have a gap of width {r} at the start and end of the line, to make room for the rounded courners.
+ */
+void drawSide(PGraphics pg, float x1, float y1, float x2, float y2, float r) {
+  float dx = x2 - x1;
+  float dy = y2 - y1;
+  float len = sqrt(dx*dx + dy*dy);
+  float frac = r/len;
+  // Note if the radious is > half the side then we don't draw a straight portion.
+  if (frac < 0.5) {
+    float x1p = lerp(x1, x2, frac);
+    float y1p = lerp(y1, y2, frac);
+    float x2p = lerp(x2, x1, frac);
+    float y2p = lerp(y2, y1, frac);
+    pg.line(pix(x1p), pix(y1p), pix(x2p), pix(y2p));
+  }
+}
+
+void drawText(PGraphics pg, String text, float x, float y) {
+    pg.text(text, pix(x), pix(y));
 }

@@ -1,5 +1,5 @@
 #TODO
-1. Create a basic pattern that contains cuts and engraving. Test that this works in glowforge.
+1. Create a basic pattern that contains cuts and engraving. Test that this works in Glowforge.
 1. Get basic shapes for cutting tiles in place - a grid of rounded rectangles
 2. Figure out how to add the bmp file for  Albert. Maybe best to have it
    changed to lines? Or leave that to Inkscape.
@@ -22,3 +22,12 @@ For now, I don't think this applies to generating cut+engrave files. The plan no
 
 
 Arc mode: OPEN, noFill:
+Font: Cooper black. 16 point. It has fewest sharp edges and narrow spaces (which can peel off), and narrow lines (which can get filled in with paint).
+
+
+SVG Units:
+- Really illuminating post on `https://graphicdesign.stackexchange.com/questions/84163/svg-and-viewbox-values#:~:text=Inkscape%20uses%20mm%20as%20the%20default%20display-unit%20or,describes%20a%20drawing%20size%20of%20100px%20x%20100px`.
+- Key is that per CSS specifications (according the above post), DPI is
+  set to 96. So that's how pixels are interpreted. Inkscape adopts this - so,
+  for example, if Processing generates a 96 pixel-wide SVG rectangle, it will
+  be exactly 1 inch when loaded into Inkscape. I verified this.
