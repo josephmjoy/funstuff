@@ -25,6 +25,9 @@ void draw() {
   float r = 20;
   svg.rect(xOr, yOr, xSize, ySize);
   drawCorner(svg, xOr + xSize, yOr, r, Corner.NE);
+  drawCorner(svg, xOr, yOr, r, Corner.NW);
+  drawCorner(svg, xOr + xSize, yOr + ySize, r, Corner.SE);
+  //drawCorner(svg, xOr, yOr, r, Corner.SW);
   svg.endDraw();
   set(10, 10, svg);
   svg.dispose();
@@ -47,12 +50,18 @@ void drawCorner(PGraphics pg, float x, float y, float r, Corner c) {
     break;
   case NW:
     start = PI;
+    cx += r;
+    cy += r;
     break;
   case SE:
-    start = PI/2;
+    start = 0;
+    cx -= r;
+    cy -= r;
     break;
   case SW:
-    start = 0;
+    start = PI/2;
+    cx += r;
+    cy -= r;
     break;
   }
   end = start + PI/2;
