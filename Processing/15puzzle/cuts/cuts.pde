@@ -9,27 +9,36 @@ void settings() {
 }
 
 void setup() {
-  //svg = createGraphics(300, 300, SVG, "output.svg");
-  svg = createGraphics(800, 800);
+  svg = createGraphics(800, 800, SVG, "output.svg");
+  //svg = createGraphics(800, 800);
 }
 
 void draw() {
   noLoop();
   svg.beginDraw();
   svg.background(255);
-  svg.noFill();
-  svg.line(50, 50, 250, 250);
-  //svg.arc(100, 100, 50, 50, 0, PI);
+
   float xOr = 50, yOr = 50;
   float xSize = 500, ySize = 500;
   float r = 20;
+  
+  svg.noFill();
+  svg.stroke(255, 0, 0); // Red == cut
   svg.rect(xOr, yOr, xSize, ySize);
   drawCorner(svg, xOr + xSize, yOr, r, Corner.NE);
   drawCorner(svg, xOr, yOr, r, Corner.NW);
   drawCorner(svg, xOr + xSize, yOr + ySize, r, Corner.SE);
-  //drawCorner(svg, xOr, yOr, r, Corner.SW);
+  drawCorner(svg, xOr, yOr + ySize, r, Corner.SW);
+  
+  // Now text:
+  PFont myFont = createFont("Cooper Black", 32);
+  svg.textFont(myFont);
+  svg.fill(0);
+  svg.text("23", xOr+xSize/2, yOr+ySize/2+2);
+  
   svg.endDraw();
-  set(10, 10, svg);
+  
+  //set(10, 10, svg);
   svg.dispose();
 }
 
