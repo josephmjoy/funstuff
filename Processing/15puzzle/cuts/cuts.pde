@@ -2,9 +2,19 @@ import processing.svg.*; //<>//
 
 final float SVG_DPI = 96; // this comes from the CSS Specification.
 final float FONT_SIZE = 32;
+// These are in inches...
 final float TILE_SIZE = 2.5;
 final float TILE_CORNER_RADIUS = 0.125;
-boolean toScreen = true;
+final float EDGE_OFFSET = 0.125; // from edge to closest cut
+
+final int NUM_ROWS = 5;
+final int NUM_COLS = 7;
+
+// These are in pixels ...
+final int CANVAS_WIDTH = (int) (SVG_DPI * (2*EDGE_OFFSET + TILE_SIZE * NUM_COLS));
+final int CANVAS_HEIGHT = (int) (SVG_DPI * (2*EDGE_OFFSET + TILE_SIZE * NUM_ROWS));
+
+boolean toScreen = false;
 
 
 PGraphics svg = null;
@@ -13,15 +23,15 @@ enum Corner {
 };
 
 void settings() {
-  size(1000, 1000);
+  size(CANVAS_WIDTH, CANVAS_HEIGHT);
 }
 
 void setup() {
 
   if (toScreen) {
-    svg = createGraphics(800, 800);
+    svg = createGraphics(CANVAS_WIDTH, CANVAS_HEIGHT);
   } else {
-    svg = createGraphics(800, 800, SVG, "output.svg");
+    svg = createGraphics(CANVAS_WIDTH, CANVAS_HEIGHT, SVG, "output.svg");
   }
 }
 
@@ -31,22 +41,31 @@ void draw() {
   svg.background(255);
   PFont myFont = createFont("Cooper Black", FONT_SIZE);
   svg.textFont(myFont);
+  svg.textAlign(RIGHT);
 
   // Units are inch ...
   float xOr, yOr;
-  xOr = yOr = 0.5;
+  xOr = yOr = EDGE_OFFSET;
 
-  for (int row = 0; row < 2; row++) {
-    for (int col = 0; col < 2; col++) {
+  int tileNo = 1;
+  final int TILE_COUNT = NUM_ROWS * NUM_COLS;
+  for (int row = 0; row <NUM_ROWS; row++) {
+    for (int col = 0; col < NUM_COLS; col++) {
       boolean topmost = row==0;
       boolean leftmost = col==0;
+      float xOff = col * TILE_SIZE;
+      float yOff = row * TILE_SIZE;
+      String label = (tileNo == TILE_COUNT) ? "" : tileNo + "";
+      drawTile(svg, xOr + xOff, yOr + yOff, leftmost, topmost, label); // leftmost, topmost
+      tileNo++;
     }
-  drawTile(svg, xOr, yOr, true, false); // leftmost, topmost
+  }
+
 
   svg.endDraw();
 
   if (toScreen) {
-    set(10, 10, svg);
+    set(0, 0, svg);
   }
   svg.dispose();
 }
@@ -66,11 +85,11 @@ float pix(float in) {
   return in * SVG_DPI;
 }
 
-void drawTile(PGraphics pg, float xOr, float yOr, boolean leftmost, boolean topmost) {
-  drawTile(pg, xOr, yOr, TILE_SIZE, TILE_SIZE, TILE_CORNER_RADIUS, leftmost, topmost);
+void drawTile(PGraphics pg, float xOr, float yOr, boolean leftmost, boolean topmost, String label) {
+  drawTile(pg, xOr, yOr, TILE_SIZE, TILE_SIZE, TILE_CORNER_RADIUS, leftmost, topmost, label);
 }
 
-void drawTile(PGraphics svg, float xOr, float yOr, float xSize, float ySize, float r, boolean leftmost, boolean topmost )
+void drawTile(PGraphics svg, float xOr, float yOr, float xSize, float ySize, float r, boolean leftmost, boolean topmost, String label )
 {
 
   styleCuts(svg);
@@ -79,9 +98,9 @@ void drawTile(PGraphics svg, float xOr, float yOr, float xSize, float ySize, flo
     drawSide(svg, xOr, yOr, xOr+xSize, yOr, r); // N
   }
   if (leftmost) {
-      drawSide(svg, xOr, yOr, xOr, yOr + ySize, r); // W
+    drawSide(svg, xOr, yOr, xOr, yOr + ySize, r); // W
   }
-  
+
   drawSide(svg, xOr + xSize, yOr, xOr+xSize, yOr + ySize, r); // E
   drawSide(svg, xOr, yOr + ySize, xOr+xSize, yOr + ySize, r); // S
 
@@ -93,7 +112,7 @@ void drawTile(PGraphics svg, float xOr, float yOr, float xSize, float ySize, flo
   // Now text:
   styleText(svg);
   float textFrac = FONT_SIZE/SVG_DPI;
-  drawText(svg, "23", xOr+xSize - textFrac*1.5, yOr + textFrac);
+  drawText(svg, label, xOr+xSize - 0.25*textFrac, yOr + textFrac);
 }
 
 
