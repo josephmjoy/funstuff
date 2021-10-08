@@ -1,7 +1,7 @@
 import processing.svg.*; //<>//
 
 final float SVG_DPI = 96; // this comes from the CSS Specification.
-
+boolean toScreen = true;
 
 
 PGraphics svg = null;
@@ -14,14 +14,20 @@ void settings() {
 }
 
 void setup() {
-  svg = createGraphics(800, 800, SVG, "output.svg");
-  //svg = createGraphics(800, 800);
+
+  if (toScreen) {
+    svg = createGraphics(800, 800);
+  } else {
+    svg = createGraphics(800, 800, SVG, "output.svg");
+  }
 }
 
 void draw() {
   noLoop();
   svg.beginDraw();
   svg.background(255);
+  PFont myFont = createFont("Cooper Black", 32);
+  svg.textFont(myFont);
 
   // Units are inch ...
   float xOr, yOr;
@@ -30,8 +36,7 @@ void draw() {
   xSize = ySize = 2.5;
   float r = 0.125;
 
-  svg.noFill();
-  svg.stroke(255, 0, 0); // Red == cut
+  styleCuts(svg);
   //svg.rect(xOr, yOr, xSize, ySize);
   drawSide(svg, xOr, yOr, xOr+xSize, yOr, r); // N
   drawSide(svg, xOr + xSize, yOr, xOr+xSize, yOr + ySize, r); // E
@@ -43,18 +48,28 @@ void draw() {
   drawCorner(svg, xOr, yOr + ySize, r, Corner.SW);
 
   // Now text:
-  PFont myFont = createFont("Cooper Black", 32);
-  svg.textFont(myFont);
-  //svg.textSize(48);
-  svg.fill(0);
-  drawText(svg, "23", xOr+xSize/2, yOr+ySize/2);
+  styleText(svg);
+  drawText(svg, "23", xOr+xSize*0.8, yOr+ySize*0.12);
 
   svg.endDraw();
 
-  //set(10, 10, svg);
+  if (toScreen) {
+    set(10, 10, svg);
+  }
   svg.dispose();
 }
 
+void styleText(PGraphics pg) {
+  pg.fill(0);
+}
+
+void styleCuts(PGraphics pg) {
+  pg.noFill();
+  pg.stroke(255, 0, 0); // Red == cut
+}
+
+
+/** Convert inches to pix */
 float pix(float in) {
   return in * SVG_DPI;
 }
@@ -113,5 +128,5 @@ void drawSide(PGraphics pg, float x1, float y1, float x2, float y2, float r) {
 }
 
 void drawText(PGraphics pg, String text, float x, float y) {
-    pg.text(text, pix(x), pix(y));
+  pg.text(text, pix(x), pix(y));
 }
