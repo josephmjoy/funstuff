@@ -2,6 +2,8 @@ import processing.svg.*; //<>//
 
 final float SVG_DPI = 96; // this comes from the CSS Specification.
 final float FONT_SIZE = 32;
+final float TILE_SIZE = 2.5;
+final float TILE_CORNER_RADIUS = 0.125;
 boolean toScreen = true;
 
 
@@ -33,11 +35,13 @@ void draw() {
   // Units are inch ...
   float xOr, yOr;
   xOr = yOr = 0.5;
-  float xSize, ySize;
-  xSize = ySize = 2.5;
-  float r = 0.125;
 
-  drawTile(svg, xOr, yOr, xSize, ySize, r);
+  for (int row = 0; row < 2; row++) {
+    for (int col = 0; col < 2; col++) {
+      boolean topmost = row==0;
+      boolean leftmost = col==0;
+    }
+  drawTile(svg, xOr, yOr, true, false); // leftmost, topmost
 
   svg.endDraw();
 
@@ -62,15 +66,25 @@ float pix(float in) {
   return in * SVG_DPI;
 }
 
-void drawTile(PGraphics svg, float xOr, float yOr, float xSize, float ySize, float r ) 
+void drawTile(PGraphics pg, float xOr, float yOr, boolean leftmost, boolean topmost) {
+  drawTile(pg, xOr, yOr, TILE_SIZE, TILE_SIZE, TILE_CORNER_RADIUS, leftmost, topmost);
+}
+
+void drawTile(PGraphics svg, float xOr, float yOr, float xSize, float ySize, float r, boolean leftmost, boolean topmost )
 {
 
   styleCuts(svg);
   //svg.rect(xOr, yOr, xSize, ySize);
-  drawSide(svg, xOr, yOr, xOr+xSize, yOr, r); // N
+  if (topmost) {
+    drawSide(svg, xOr, yOr, xOr+xSize, yOr, r); // N
+  }
+  if (leftmost) {
+      drawSide(svg, xOr, yOr, xOr, yOr + ySize, r); // W
+  }
+  
   drawSide(svg, xOr + xSize, yOr, xOr+xSize, yOr + ySize, r); // E
   drawSide(svg, xOr, yOr + ySize, xOr+xSize, yOr + ySize, r); // S
-  drawSide(svg, xOr, yOr, xOr, yOr + ySize, r); // W
+
   drawCorner(svg, xOr + xSize, yOr, r, Corner.NE);
   drawCorner(svg, xOr, yOr, r, Corner.NW);
   drawCorner(svg, xOr + xSize, yOr + ySize, r, Corner.SE);
@@ -79,7 +93,7 @@ void drawTile(PGraphics svg, float xOr, float yOr, float xSize, float ySize, flo
   // Now text:
   styleText(svg);
   float textFrac = FONT_SIZE/SVG_DPI;
-  drawText(svg, "23", xOr+xSize - textFrac, yOr);
+  drawText(svg, "23", xOr+xSize - textFrac*1.5, yOr + textFrac);
 }
 
 
