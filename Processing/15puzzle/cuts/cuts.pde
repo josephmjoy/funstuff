@@ -1,6 +1,7 @@
 import processing.svg.*; //<>//
 
 final float SVG_DPI = 96; // this comes from the CSS Specification.
+final float FONT_SIZE = 32;
 boolean toScreen = true;
 
 
@@ -26,7 +27,7 @@ void draw() {
   noLoop();
   svg.beginDraw();
   svg.background(255);
-  PFont myFont = createFont("Cooper Black", 32);
+  PFont myFont = createFont("Cooper Black", FONT_SIZE);
   svg.textFont(myFont);
 
   // Units are inch ...
@@ -36,20 +37,7 @@ void draw() {
   xSize = ySize = 2.5;
   float r = 0.125;
 
-  styleCuts(svg);
-  //svg.rect(xOr, yOr, xSize, ySize);
-  drawSide(svg, xOr, yOr, xOr+xSize, yOr, r); // N
-  drawSide(svg, xOr + xSize, yOr, xOr+xSize, yOr + ySize, r); // E
-  drawSide(svg, xOr, yOr + ySize, xOr+xSize, yOr + ySize, r); // S
-  drawSide(svg, xOr, yOr, xOr, yOr + ySize, r); // W
-  drawCorner(svg, xOr + xSize, yOr, r, Corner.NE);
-  drawCorner(svg, xOr, yOr, r, Corner.NW);
-  drawCorner(svg, xOr + xSize, yOr + ySize, r, Corner.SE);
-  drawCorner(svg, xOr, yOr + ySize, r, Corner.SW);
-
-  // Now text:
-  styleText(svg);
-  drawText(svg, "23", xOr+xSize*0.8, yOr+ySize*0.12);
+  drawTile(svg, xOr, yOr, xSize, ySize, r);
 
   svg.endDraw();
 
@@ -73,6 +61,27 @@ void styleCuts(PGraphics pg) {
 float pix(float in) {
   return in * SVG_DPI;
 }
+
+void drawTile(PGraphics svg, float xOr, float yOr, float xSize, float ySize, float r ) 
+{
+
+  styleCuts(svg);
+  //svg.rect(xOr, yOr, xSize, ySize);
+  drawSide(svg, xOr, yOr, xOr+xSize, yOr, r); // N
+  drawSide(svg, xOr + xSize, yOr, xOr+xSize, yOr + ySize, r); // E
+  drawSide(svg, xOr, yOr + ySize, xOr+xSize, yOr + ySize, r); // S
+  drawSide(svg, xOr, yOr, xOr, yOr + ySize, r); // W
+  drawCorner(svg, xOr + xSize, yOr, r, Corner.NE);
+  drawCorner(svg, xOr, yOr, r, Corner.NW);
+  drawCorner(svg, xOr + xSize, yOr + ySize, r, Corner.SE);
+  drawCorner(svg, xOr, yOr + ySize, r, Corner.SW);
+
+  // Now text:
+  styleText(svg);
+  float textFrac = FONT_SIZE/SVG_DPI;
+  drawText(svg, "23", xOr+xSize - textFrac, yOr);
+}
+
 
 /**
  @param x, y - corner of the rectangle that is being rounded
