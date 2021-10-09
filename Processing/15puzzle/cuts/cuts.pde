@@ -7,8 +7,8 @@ final float TILE_SIZE = 2.5;
 final float TILE_CORNER_RADIUS = 0.125;
 final float EDGE_OFFSET = 0.125; // from edge to closest cut
 
-final int NUM_ROWS = 1;
-final int NUM_COLS = 3;
+final int NUM_ROWS = 5;
+final int NUM_COLS = 6;
 
 final boolean TO_SCREEN =false; // true == just display to screen; false == just save to SVG file "output.svg"
 final boolean DRAW_TEXT = true;
@@ -16,6 +16,10 @@ final boolean DRAW_TEXT = true;
 // These are in pixels ...
 final int CANVAS_WIDTH = (int) (SVG_DPI * (2*EDGE_OFFSET + TILE_SIZE * NUM_COLS));
 final int CANVAS_HEIGHT = (int) (SVG_DPI * (2*EDGE_OFFSET + TILE_SIZE * NUM_ROWS));
+
+final int TEXT_COLOR = color(0, 0, 255); // blue
+final int CUTS_COLOR = color(255, 0, 0); // red
+
 
 PGraphics svg = null;
 enum Corner {
@@ -74,12 +78,12 @@ void draw() {
 }
 
 void styleText(PGraphics pg) {
-  pg.fill(0);
+  pg.fill(TEXT_COLOR);
 }
 
 void styleCuts(PGraphics pg) {
   pg.noFill();
-  pg.stroke(255, 0, 0); // Red == cut
+  pg.stroke(CUTS_COLOR); // Red == cut
   pg.strokeWeight(1);
 }
 

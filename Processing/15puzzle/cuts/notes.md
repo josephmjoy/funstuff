@@ -1,8 +1,6 @@
 #TODO
+1. Colors: text-pure blue; albert: black; cuts: pure red
 1. Need to convert text to paths (in Inkscape)
-2. Glowforge is showing everythng as dashed-lines, why?
-3. Remove outer-rectangle (is that background)?
-4. Make a cropped version for initial testing with Glowforge.
 
 # SVG Paths
 I don't think it's necessary to create SVG paths. Instead just inject a bunch of lines and 
@@ -72,3 +70,8 @@ Verified that:
       simply that it was too large to print! There could be additonal reasons,
       but now a Processing-generated single tile (without letters) is accepted
       by Glowforge without any modifications (just specify the cut type).
+
+When making the composite, I tweaked a few things:
+- Albert position is (42.333, 26.429)
+- The number "25" is lowered just a bit so that it doesn't overlap
+  with Albert's chest.
