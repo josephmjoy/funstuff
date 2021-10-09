@@ -31,3 +31,17 @@ SVG Units:
   set to 96. So that's how pixels are interpreted. Inkscape adopts this - so,
   for example, if Processing generates a 96 pixel-wide SVG rectangle, it will
   be exactly 1 inch when loaded into Inkscape. I verified this.
+
+
+Processing Albert (scanned line art -> SVG).
+- Bring into Gimp. Play with brightness and contrast, so that the lines pop out.
+- Clean up (can be time consuming).
+- Pick a lower resolution - enough so that the lines will resolve, but not
+  so much that Inkscape will bog down. ~1K pixels on the side should work.
+- In Inkscape choose Path -> Trace bitmap. I think I picked multiple layers.
+- Add an "Offset effect". There is also another powerful way to thin or thick 
+  a path very precisely: see this: https://www.YouTube.com/watch?v=ZoSAb-Fn5gs -  remove the inner portions of the path, then give it a stroke width of a
+  certain amount, split that into paths, and delete the outer path.
+- Then edit nodes to remove artifacts and widen certain too-thin areas.
+
+- 
