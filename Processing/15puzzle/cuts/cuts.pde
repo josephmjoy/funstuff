@@ -7,15 +7,15 @@ final float TILE_SIZE = 2.5;
 final float TILE_CORNER_RADIUS = 0.125;
 final float EDGE_OFFSET = 0.125; // from edge to closest cut
 
-final int NUM_ROWS = 5;
-final int NUM_COLS = 7;
+final int NUM_ROWS = 1;
+final int NUM_COLS = 3;
+
+final boolean TO_SCREEN =false; // true == just display to screen; false == just save to SVG file "output.svg"
+final boolean DRAW_TEXT = true;
 
 // These are in pixels ...
 final int CANVAS_WIDTH = (int) (SVG_DPI * (2*EDGE_OFFSET + TILE_SIZE * NUM_COLS));
 final int CANVAS_HEIGHT = (int) (SVG_DPI * (2*EDGE_OFFSET + TILE_SIZE * NUM_ROWS));
-
-boolean toScreen = false;
-
 
 PGraphics svg = null;
 enum Corner {
@@ -28,17 +28,20 @@ void settings() {
 
 void setup() {
 
-  if (toScreen) {
+  if (TO_SCREEN) {
     svg = createGraphics(CANVAS_WIDTH, CANVAS_HEIGHT);
+
   } else {
-    svg = createGraphics(CANVAS_WIDTH, CANVAS_HEIGHT, SVG, "output.svg");
+    String txt = DRAW_TEXT ? "" : "-NT";
+    String fn = String.format("tiles-%dx%d%s.svg", NUM_COLS, NUM_ROWS, txt);
+    println("Output file: " + fn);
+    svg = createGraphics(CANVAS_WIDTH, CANVAS_HEIGHT, SVG, fn);
   }
 }
 
 void draw() {
   noLoop();
   svg.beginDraw();
-  svg.background(255);
   PFont myFont = createFont("Cooper Black", FONT_SIZE);
   svg.textFont(myFont);
   svg.textAlign(RIGHT);
@@ -64,7 +67,7 @@ void draw() {
 
   svg.endDraw();
 
-  if (toScreen) {
+  if (TO_SCREEN) {
     set(0, 0, svg);
   }
   svg.dispose();
@@ -77,6 +80,7 @@ void styleText(PGraphics pg) {
 void styleCuts(PGraphics pg) {
   pg.noFill();
   pg.stroke(255, 0, 0); // Red == cut
+  pg.strokeWeight(1);
 }
 
 
@@ -110,9 +114,11 @@ void drawTile(PGraphics svg, float xOr, float yOr, float xSize, float ySize, flo
   drawCorner(svg, xOr, yOr + ySize, r, Corner.SW);
 
   // Now text:
-  styleText(svg);
-  float textFrac = FONT_SIZE/SVG_DPI;
-  drawText(svg, label, xOr+xSize - 0.25*textFrac, yOr + textFrac);
+  if (DRAW_TEXT) {
+    styleText(svg);
+    float textFrac = FONT_SIZE/SVG_DPI;
+    drawText(svg, label, xOr+xSize - 0.25*textFrac, yOr + textFrac);
+  }
 }
 
 
