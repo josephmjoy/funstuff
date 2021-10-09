@@ -75,3 +75,15 @@ When making the composite, I tweaked a few things:
 - Albert position is (42.333, 26.429)
 - The number "25" is lowered just a bit so that it doesn't overlap
   with Albert's chest.
+
+Updated composite-7x5-v1.svg so that all the digits are one big path union. This allows all to be selected at one shot and intersected with the clipping rectangle, when
+we need to generate parts that can fit in the laser cutter.
+
+**Using colors to print only sections of the document**
+One Idea I had is to use colors for the cut lines - rows 1-4 (except bottom horizontal lines) are red , borrom horizontal lines of row 4 is (sa) green; This is also the
+top of row 5. Row 5 (except top horizontal lines) is (say) purple. Then, in Glowforge, one can select red+green for rows 1-4, and green + purple for row 5.
+Have to similarly color the text, except using just two colors.
+
+And finally, one would have to split albert carefuly into two colors at the boundary between row 4 and 5.
+
+All this is quite a bit of work; so may not be practical, but just putting this out there for future designs.
