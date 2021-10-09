@@ -8,7 +8,7 @@ final float TILE_CORNER_RADIUS = 0.125;
 final float EDGE_OFFSET = 0.125; // from edge to closest cut
 
 final int NUM_ROWS = 5;
-final int NUM_COLS = 6;
+final int NUM_COLS = 7;
 
 final boolean TO_SCREEN =false; // true == just display to screen; false == just save to SVG file "output.svg"
 final boolean DRAW_TEXT = true;
