@@ -14,3 +14,6 @@ Tail - > Rope:
 `https://newsfromafrica.org/wp-content/uploads/2016/06/o-ELEPHANT-IVORY-facebook.jpg`
 
 
+# File Descriptions
+- coasters-base.svg: the base pattern, including the mask (in black) for intersecting with the coaster image.
+- coasters-felt.svg: pattern for the felt base. This base is inset by about 0.04in from the boundary. That is approximately the outer extent of the holes, which it is also intended to cover (the felt pattern has no holes). There is a hole in the center - this is to expose the wooden base to hand-write in an inscription (this would be under the coaster, so normally not visible).
