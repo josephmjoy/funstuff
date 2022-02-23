@@ -24,14 +24,14 @@
      inkscape:document-units="in"
      showgrid="false"
      inkscape:zoom="2.0000001"
-     inkscape:cx="212.99999"
+     inkscape:cx="213.24999"
      inkscape:cy="358.24998"
      inkscape:window-width="2560"
      inkscape:window-height="1369"
      inkscape:window-x="2552"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer4" />
+     inkscape:current-layer="layer2" />
   <defs
      id="defs2" />
   <g
@@ -138,12 +138,6 @@
       </g>
     </g>
   </g>
-  <g
-     inkscape:label="wave mask"
-     inkscape:groupmode="layer"
-     id="g1529"
-     style="display:none"
-     sodipodi:insensitive="true" />
   <g
      inkscape:label="wave"
      inkscape:groupmode="layer"
