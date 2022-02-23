@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="15in"
+   height="20in"
+   viewBox="0 0 381 508.00002"
+   version="1.1"
+   id="svg4163"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   sodipodi:docname="frame-inset-outline-half-inch-paths.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview4165"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     units="in"
+     inkscape:zoom="0.38885732"
+     inkscape:cx="1158.5226"
+     inkscape:cy="1253.6732"
+     inkscape:window-width="2560"
+     inkscape:window-height="1377"
+     inkscape:window-x="2552"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs4160" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-43.073686,-34.568532)">
+    <path
+       id="rect4246"
+       style="fill:#00ff00;stroke:#ff0000;stroke-width:0.969316;stroke-miterlimit:10;fill-opacity:1"
+       d="M 60.484375 48.484375 C 53.836375 48.484375 48.484375 53.836375 48.484375 60.484375 L 48.484375 1859.5156 C 48.484375 1866.1636 53.836375 1871.5156 60.484375 1871.5156 L 1379.5176 1871.5156 C 1386.1656 1871.5156 1391.5176 1866.1636 1391.5176 1859.5156 L 1391.5176 60.484375 C 1391.5176 53.836375 1386.1656 48.484375 1379.5176 48.484375 L 60.484375 48.484375 z M 108.51758 96.517578 L 1331.4824 96.517578 C 1338.1304 96.517578 1343.4824 101.86958 1343.4824 108.51758 L 1343.4824 1811.4824 C 1343.4824 1818.1304 1338.1304 1823.4824 1331.4824 1823.4824 L 108.51758 1823.4824 C 101.86958 1823.4824 96.517578 1818.1304 96.517578 1811.4824 L 96.517578 108.51758 C 96.517578 101.86958 101.86958 96.517578 108.51758 96.517578 z "
+       transform="matrix(0.26458333,0,0,0.26458333,43.073686,34.568532)" />
+  </g>
+</svg>
