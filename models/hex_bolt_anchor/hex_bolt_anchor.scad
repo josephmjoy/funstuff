@@ -14,18 +14,20 @@ $fs=1;
 //   washer diameter: 17.74mm
 // Model dimensions below add
 clearance = 0.5; // mm
-base_dia = 25.5-clearance; // 1 inch
-base_height = 8.27;
+nut_height = 8.27;
 hex_dia = 16.41+clearance; // Vertex-to-vertex
 washer_dia = 17.74+clearance;
-washer_height = 1.65+clearance ;
+washer_height = 1.65; // no vertical clearance - so washer is flush
+base_dia = 25.5-clearance; // 1 inch
+base_height = nut_height + washer_height;
+
 eps=0.1; // for CSG
 
-module hex(dia=20, h=10) {
+module hex(dia, h) {
     cylinder(h=h, r=dia/2, $fn=6);
 }
 
-module washer(dia=20, h=2) {
+module washer(dia, h) {
     cylinder(h=h, r=dia/2);
 }
 
