@@ -4,20 +4,20 @@
 //
 $fs=1;
 
-// 5/16" - 24 nut dimensions:
+// 3/4" - 24 nut dimensions:
 //   nut height: 8.27mm
 //   flat diameter: 14.21mm
 //   vertex diameter: 16.23mm (measured)
 //   vertex diameter: 16.41mm (calculated from flat diameter)
 //   Note that the nut has slightly rounded corners.
 //   washer thickness: 1.65mm
-//   washer diameter: 17.74mm
+//   washer diameter: 20.92mm
 // Model dimensions below add
 clearance = 0.5; // mm
 nut_height = 8.27;
 hex_dia = 16.41+clearance; // Vertex-to-vertex
-washer_dia = 17.74+clearance;
-washer_height = 1.65; // no vertical clearance - so washer is flush
+washer_dia = 20.92+clearance;
+washer_height = 1.89; // no vertical clearance - so washer is flush
 base_dia = 25.5-clearance; // 1 inch
 base_height = nut_height + washer_height;
 
