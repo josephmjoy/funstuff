@@ -19,13 +19,13 @@
 
 // ------- START OF PARAMETERS ---------------------
 // Horizontal clearances (mm) so parts drop in easily
-clearance = 0.5;
+clearance = 0.4;
 
 // Exact height of nut
 nut_height = 8.45;
 
 // Vertex-to-vertex dia of nut
-hex_dia = 16.41;
+hex_dia = 16.23;
 
 // Exact dia of washer (style A)
 washer_dia = 20.92;
