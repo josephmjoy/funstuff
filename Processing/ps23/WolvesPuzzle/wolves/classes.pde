@@ -1,7 +1,7 @@
 class Barrier {
   float xc;
   float yc; // center of barrier
-  float length;
+  float len;
   float angle; // angle in radians
   float thickness;
 
@@ -11,21 +11,21 @@ class Barrier {
   }
 
 
-  Barrier(float xc, float yc, float length, float angle, float thickness) {
+  Barrier(float xc, float yc, float len, float angle, float thickness) {
     this.xc = xc;
     this.yc = yc;
-    this.length = length;
+    this.len = len;
     this.angle = angle;
     this.thickness = thickness;
   }
 
   void render() {
-    float dx = length/2 * cos(this.angle);
-    float dy = length/2 * sin(this.angle);
+    float dx = this.len/2 * cos(this.angle);
+    float dy = this.len/2 * sin(this.angle);
     float x1 = this.xc - dx;
     float y1 = this.yc - dy;
     float x2 = this.xc + dx;
-    float y2 = this.xc + dy;
+    float y2 = this.yc + dy;
     strokeWeight(this.thickness);
     line(x1, y1, x2, y2);
   }

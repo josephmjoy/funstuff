@@ -3,11 +3,6 @@
 //
 
 
-  
-
-
-
-
 void settings() {
   size(800, 800);
 }
