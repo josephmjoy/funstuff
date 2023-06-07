@@ -1,6 +1,6 @@
 Barrier[] g_barriers = {
   new Barrier(300, 300),
-  new Barrier(400, 400),
+  new Barrier(400, 400, 100.0, PI/4, 2.0),
   new Barrier(500, 500)
 };
 
@@ -13,7 +13,7 @@ Wolf[] g_wolves = {
 
 
 Sheep[] g_sheep = {
-  new Sheep(30, 30),
-  new Sheep(300, 100),
-  new Sheep(600, 200)
+  new Sheep('A', 30, 30),
+  new Sheep('B', 300, 100),
+  new Sheep('C', 600, 200)
 };

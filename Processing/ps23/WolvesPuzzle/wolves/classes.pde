@@ -26,9 +26,11 @@ class Barrier {
     float y1 = this.yc - dy;
     float x2 = this.xc + dx;
     float y2 = this.yc + dy;
+    
     strokeWeight(this.thickness);
     line(x1, y1, x2, y2);
   }
+  
 }
 
 
@@ -49,28 +51,31 @@ class Wolf {
   }
 
   void render() {
-    fill(150);
+    fill(0);
     ellipse(xc, yc, dia, dia);
   }
 }
 
 class Sheep {
+  char c; // letter associated with this sheep
   float xc;
   float yc; // center
   float dia;
 
-  Sheep(float xc, float yc) {
-    this(xc, yc, 5.0);
+  Sheep(char c, float xc, float yc) {
+    this(c, xc, yc, 10.0);
   }
 
 
-  Sheep (float xc, float yc, float dia) {
+  Sheep (char c, float xc, float yc, float dia) {
+    this.c = c;
     this.xc = xc;
     this.yc = yc;
     this.dia = dia;
   }
 
   void render() {
+    stroke(1);
     fill(255);
     ellipse(xc, yc, dia, dia);
   }

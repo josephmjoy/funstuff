@@ -31,10 +31,20 @@ void renderSheep() {
 void renderIntersections() {
   for (Sheep s : g_sheep) {
     for (Wolf w : g_wolves) {
-      line(s.xc, s.yc, w.xc, w.yc);
+      boolean blocks = false;
       for (Barrier b : g_barriers) {
-        //
+         if (blocks(b, w, s)) {
+          blocks = true;
+          break;
+        }
       }
+      
+      if (blocks) {
+        stroke(0, 255, 0);
+      } else {
+        stroke(255, 0, 0);
+      }
+      line(s.xc, s.yc, w.xc, w.yc);
     }
   }
 }
