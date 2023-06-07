@@ -28,11 +28,23 @@ void renderSheep() {
   }
 }
 
+void renderIntersections() {
+  for (Sheep s : g_sheep) {
+    for (Wolf w : g_wolves) {
+      line(s.xc, s.yc, w.xc, w.yc);
+      for (Barrier b : g_barriers) {
+        //
+      }
+    }
+  }
+}
+
 void setup() {
 }
 void draw() {
   renderBarriers();
   renderWolves();
   renderSheep();
+  renderIntersections();
   noLoop();
 }

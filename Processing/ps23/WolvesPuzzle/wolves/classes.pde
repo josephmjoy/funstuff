@@ -36,7 +36,7 @@ class Wolf {
   float xc;
   float yc; // center
   float dia;
-  
+
   Wolf(float xc, float yc) {
     this(xc, yc, 10.0);
   }
@@ -54,11 +54,11 @@ class Wolf {
   }
 }
 
-class Sheep{
+class Sheep {
   float xc;
   float yc; // center
   float dia;
-  
+
   Sheep(float xc, float yc) {
     this(xc, yc, 5.0);
   }
