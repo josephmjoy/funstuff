@@ -7,7 +7,7 @@ class Barrier {
 
 
   Barrier(float xc, float yc) {
-    this(xc, yc, 30.0, 0.0, 2.0);
+    this(xc, yc, 100.0, 0.0, 2.0);
   }
 
 
@@ -49,6 +49,7 @@ class Wolf {
   }
 
   void render() {
+    fill(150);
     ellipse(xc, yc, dia, dia);
   }
 }
@@ -70,6 +71,7 @@ class Sheep{
   }
 
   void render() {
+    fill(255);
     ellipse(xc, yc, dia, dia);
   }
 }
