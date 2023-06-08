@@ -4,57 +4,23 @@
 
 
 void settings() {
-  size(800, 800);
+  size(DISPLAY_WIDTH, DISPLAY_HEIGHT);
 }
-
-void renderBarriers() {
-  for (Barrier b : g_barriers) {
-    b.render();
-    //System.out.println(b.xc);
-  }
-}
-
-void renderWolves() {
-  for (Wolf w : g_wolves) {
-    w.render();
-    //System.out.println(w.xc);
-  }
-}
-
-void renderSheep() {
-  for (Sheep s : g_sheep) {
-    s.render();
-    //System.out.println(s.xc);
-  }
-}
-
-void renderIntersections() {
-  for (Sheep s : g_sheep) {
-    for (Wolf w : g_wolves) {
-      boolean blocks = false;
-      for (Barrier b : g_barriers) {
-         if (blocks(b, w, s)) {
-          blocks = true;
-          break;
-        }
-      }
-      
-      if (blocks) {
-        stroke(0, 255, 0);
-      } else {
-        stroke(255, 0, 0);
-      }
-      line(s.xc, s.yc, w.xc, w.yc);
-    }
-  }
-}
+GameState g_gameState = new GameState(1, 1, 1);
 
 void setup() {
+  //randomSeed(g_randomSeed);
+  g_gameState.randomize();
 }
+
+
 void draw() {
-  renderBarriers();
-  renderWolves();
-  renderSheep();
-  renderIntersections();
+  renderGameState(g_gameState);
+  renderIntersections(g_gameState);
   noLoop();
+}
+
+void mousePressed() {
+  System.out.println(String.format("new Sheep('X', %d, %d),", mouseX, mouseY));
+  
 }

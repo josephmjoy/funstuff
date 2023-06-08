@@ -1,4 +1,4 @@
-class Barrier {
+class Barrier{
   float xc;
   float yc; // center of barrier
   float len;
@@ -26,7 +26,7 @@ class Barrier {
     float y1 = this.yc - dy;
     float x2 = this.xc + dx;
     float y2 = this.yc + dy;
-    
+    stroke(0);
     strokeWeight(this.thickness);
     line(x1, y1, x2, y2);
   }
@@ -74,9 +74,71 @@ class Sheep {
     this.dia = dia;
   }
 
-  void render() {
-    stroke(1);
-    fill(255);
+  void render(boolean markSafe) {
+    if (markSafe) {
+      fill(0, 255, 0);
+    } else {
+      fill(255);
+    }
+    stroke(0);
+    strokeWeight(1);
     ellipse(xc, yc, dia, dia);
+    fill(0);
+    text(this.c, this.xc - 5, this.yc - 10);
+  }
+  
+  // Not visible by *any* wolf
+  void render() {
+    render(false);
+  }
+  
+}
+
+class GameState {
+  Barrier[] barriers;
+  Sheep[] sheep;
+  Wolf[] wolves;
+
+  GameState(int nBarriers, int nSheep, int nWolves) {
+    barriers = new Barrier[nBarriers];
+    for (int i = 0; i < barriers.length; i++) {
+      barriers[i] = new Barrier(MIN_X, MIN_Y);
+    }
+    
+    sheep = new Sheep[nSheep];
+    for (int i = 0; i < sheep.length; i++) {
+      sheep[i] = new Sheep('X', MIN_X, MIN_Y);
+    }
+    
+    wolves = new Wolf[nWolves];
+    for (int i = 0; i < wolves.length; i++) {
+      wolves[i] = new Wolf(MIN_X, MIN_Y);
+    }
+  }
+  
+  // Randomizes the locations and (where applicable) orientations
+  void randomize() { //<>//
+    
+    // We want to make sure borders do not extend outside the boundaries
+    final float DELTA = MIN_BORDER_LEN/2;
+    assert(MAX_X > DELTA);
+    assert(MAX_Y > DELTA);
+    System.out.println(MAX_X + " " + MAX_Y);
+    for (Barrier b: this.barriers) {
+      b.xc = random(MIN_X+DELTA, MAX_X-DELTA);
+      b.yc = random(MIN_Y+DELTA, MAX_Y-DELTA);
+      b.len = random(MIN_BORDER_LEN, MAX_BORDER_LEN);
+      b.angle = random(MIN_ANGLE, MAX_ANGLE);
+    }
+    
+    for (Sheep s: this.sheep) {
+      s.xc = random(MIN_X, MAX_X);
+      s.yc = random(MIN_Y, MAX_Y);
+    }
+    
+    for (Wolf w: this.wolves) {
+      w.xc = random(MIN_X, MAX_X);
+      w.yc = random(MIN_Y, MAX_Y);
+    }
   }
 }

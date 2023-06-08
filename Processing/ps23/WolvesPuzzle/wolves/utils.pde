@@ -48,3 +48,48 @@ boolean blocks(Barrier b, Wolf w, Sheep s) {
   return intersects;
 
 }
+
+
+
+void renderGameState(GameState state) {
+  for (Barrier b : state.barriers) {
+    b.render();
+    //System.out.println(b.xc);
+  }
+
+  for (Wolf w : state.wolves) {
+    w.render();
+    //System.out.println(w.xc);
+  }
+
+  for (Sheep s : state.sheep) {
+    s.render();
+    //System.out.println(s.xc);
+  }
+}
+
+void renderIntersections(GameState state) {
+  for (Sheep s : state.sheep) {
+    boolean all_clear = true;
+    for (Wolf w : state.wolves) {
+      boolean blocks = false;
+      for (Barrier b : state.barriers) {
+         if (blocks(b, w, s)) {
+          blocks = true;
+          break;
+        }
+      }
+      
+      if (blocks) {
+        stroke(0, 255, 0);
+      } else {
+        stroke(255, 0, 0);
+        all_clear = false;  // OUCH - this wolf can see this sheep
+      }
+      line(s.xc, s.yc, w.xc, w.yc);
+    }
+    if (all_clear) {
+      s.render(true);
+    }
+  }
+}
