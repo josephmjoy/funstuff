@@ -103,14 +103,33 @@ void saveState(GameState state, String fileName) {
   try {
     PrintWriter writer = new PrintWriter(sketchPath() + File.separator + fileName, "UTF-8");
 
-    // Print code to initialize barriers
     writer.println("// State saved on " + java.time.LocalDateTime.now());
+
+
+    // Write out code to initialize barriers
     writer.println("Barrier[] g_savedBarriers = {");
     for (Barrier b : state.barriers) {
       //   new Barrier(400, 400, 150.0, PI/4, 2.0),
       writer.format("    new Barrier(%f, %f, %f, %f, %f),\n", b.xc, b.yc, b.len, b.angle, b.thickness);
     }
     writer.println("};");
+
+    // Write out code to initialize sheep
+    writer.println("\n\nSheep[] g_savedSheep = {");
+    for (Sheep s : state.sheep) {
+      //   new Sheep('A', 30, 30),
+      writer.format("   new Sheep('%c', %f, %f),\n", s.c, s.xc, s.yc);
+    }
+    writer.println("};");
+
+    // Write out code to initialize wolves
+    writer.println("\n\nWolf[] g_savedWolves = {");
+    for (Wolf w : state.wolves) {
+      //  new Wolf(100, 600),
+      writer.format("   new Wolf(%f, %f),\n", w.xc, w.yc);
+    }
+    writer.println("};");
+
     writer.close();
   }
   catch (IOException e) {
