@@ -115,8 +115,7 @@ class GameState {
   }
 
   // Randomizes the locations and (where applicable) orientations
-  void randomize() {
-
+  void randomizeBorders() {
     // We want to make sure borders do not extend outside the boundaries
     final float DELTA = MIN_BORDER_LEN/2;
     assert(MAX_X > DELTA);
@@ -128,7 +127,9 @@ class GameState {
       b.len = random(MIN_BORDER_LEN, MAX_BORDER_LEN);
       b.angle = random(MIN_ANGLE, MAX_ANGLE);
     }
+  }
 
+  void randomizeSheep() {
     for (Sheep s : this.sheep) {
       // Pick a random barrier and position near it.
       int i = int(random(this.barriers.length));
@@ -139,11 +140,12 @@ class GameState {
       s.xc = constrain(b.xc+dx, MIN_X, MAX_X);
       s.yc = constrain(b.yc+dy, MIN_Y, MAX_Y);
     }
+  }
 
+  void randomizeWolves() {
     for (Wolf w : this.wolves) {
       w.xc = random(MIN_X, MAX_X);
       w.yc = random(MIN_Y, MAX_Y);
     }
   }
-
 }

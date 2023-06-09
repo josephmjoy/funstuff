@@ -1,5 +1,6 @@
 final int g_randomSeed  = 0; // for repeatability
 
+
 // Display size
 final int DISPLAY_WIDTH = 800;
 final int DISPLAY_HEIGHT = 800;
