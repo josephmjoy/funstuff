@@ -12,7 +12,7 @@ GameState g_gameState = new GameState(10, "ABCDEFGHIJKLMN", 4);
 boolean g_renderAnswer = true;
 
 // Tracks if a solution has been found
-boolean g_solutionFound = false;
+boolean g_solutionFound = true;
 
 // Request to stop re-rendering
 boolean g_stopRendering = false;
@@ -21,6 +21,7 @@ void setup() {
   //randomSeed(g_randomSeed);
   //frameRate(1);
   //g_gameState.randomize();
+  g_gameState.sheep = g_savedSheep;
   g_gameState.barriers = g_savedBarriers;
   g_gameState.wolves = g_savedWolves;
 }
@@ -54,7 +55,6 @@ void draw() {
       if (safe_count == 5) {
         g_solutionFound = true;
         break;
-        //saveState(g_gameState, "saved_state.pde");
       }
     }
   }
@@ -64,28 +64,56 @@ void mousePressed() {
   System.out.println(String.format("new Sheep('X', %d, %d),", mouseX, mouseY));
 }
 
-// P: render puzzle.
-// A: Render answer
-// S: save screen
-// R: Re-solve puzzle
+// p: render puzzle.
+// a: Render answer
+// s: save screen
+// r: Re-solve puzzle
 void keyPressed() {
+  boolean oldVal = g_stopRendering;
+  g_stopRendering = false;
   switch(key) {
+
+  case 'b':
+    println("b: Randomize borders.");
+    g_gameState.randomizeBorders();
+    break;
+
+  case 'w':
+    println("w: Randomize wolves.");
+    g_gameState.randomizeWolves();
+    break;
+
   case 'p':
-    println("Render only puzzle.");
+    println("p: Render only puzzle.");
     g_renderAnswer = false;
-    g_stopRendering = false;
     break;
+
   case 'a':
-    println("A: Render puzzle and answer.");
+    println("a: Render puzzle and answer.");
     g_renderAnswer = true;
-    g_stopRendering = false;
     break;
+
   case 'r':
-    println("R: Resolve puzzle.");
+    println("r: Resolve puzzle.");
     g_solutionFound = false;
-    g_stopRendering = false;
     break;
+
+  case 's':
+    String imageFile = g_renderAnswer ? "puzzle-answer.png" : "puzzle.png";
+    println("s: Save screen to file " + imageFile);
+    save(imageFile);
+    g_stopRendering = oldVal;
+    break;
+
+  case 'F':
+    String dataFile = "saved_state_NEW.pde";
+    println("s: Save date to file " + dataFile);
+    g_stopRendering = oldVal;
+    saveState(g_gameState, dataFile);
+    break;
+
   default:
+    g_stopRendering= oldVal;
     break;
   }
 }
