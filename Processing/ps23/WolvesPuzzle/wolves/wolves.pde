@@ -7,7 +7,7 @@ void settings() {
   size(DISPLAY_WIDTH, DISPLAY_HEIGHT);
 }
 
-GameState g_gameState = new GameState(10, "ABCDEFGHIJKLMN", 4);
+GameState g_gameState = new GameState(12, "WOOLLYEETTAAINSRH", 5);
 // Wether to render the puzzle+answer or just the puzzle
 boolean g_renderAnswer = true;
 
@@ -18,7 +18,7 @@ boolean g_solutionFound = true;
 boolean g_stopRendering = false;
 
 // Number of safe sheep desired
-int g_safeSheepNeeded = 5;
+int g_safeSheepNeeded = 6;
 
 // Current safe sheep found
 int g_curSafeSheepCount = 0;
@@ -27,12 +27,18 @@ int g_curSafeSheepCount = 0;
 int g_curSheepIndex = 0;
 
 void setup() {
-  //randomSeed(g_randomSeed);
+  randomSeed(g_randomSeed);
   //frameRate(1);
-  //g_gameState.randomize();
-  g_gameState.sheep = g_savedSheep;
-  g_gameState.barriers = g_savedBarriers;
-  g_gameState.wolves = g_savedWolves;
+  boolean restore = false;
+  if (restore) {
+    g_gameState.sheep = g_savedSheep;
+    g_gameState.barriers = g_savedBarriers;
+    g_gameState.wolves = g_savedWolves;
+  } else {
+    g_gameState.randomizeBorders();
+    g_gameState.randomizeWolves();
+    g_gameState.randomizeSheep();
+  }
 }
 
 
