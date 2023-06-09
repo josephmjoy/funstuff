@@ -49,8 +49,6 @@ void draw() {
     int MAX_TRIES = 1;
     for (int i = 0; i < MAX_TRIES; i++) {
       g_gameState.randomizeSheep();
-      //g_gameState.randomizeWolves();
-      //g_gameState.randomizeBorders();
       int safe_count = calculateSafeCount(g_gameState, g_renderAnswer);
       if (safe_count == 5) {
         g_solutionFound = true;
