@@ -85,46 +85,7 @@ int calculateSafeCount(GameState state, boolean render) {
 }
 
 
-// returns the number of safe sheep locations
-// if {render} is true it will render a visualization of sight paths
-// and re-render safe sheep with a safe color
-int calculateSafeCountOld(GameState state, boolean render) {
-  int safe_count = 0;
-  for (Sheep s : state.sheep) {
-    boolean all_clear = true;
-    for (Wolf w : state.wolves) {
-      boolean blocks = false;
-      for (Barrier b : state.barriers) {
-        if (blocks(b, w, s)) {
-          blocks = true;
-          break;
-        }
-      }
 
-      if (blocks) {
-        if (render) {
-          stroke(0, 255, 0);
-        }
-      } else {
-        if (render) {
-          stroke(255, 0, 0);
-        }
-        all_clear = false;  // OUCH - this wolf can see this sheep
-      }
-
-      if (render) {
-        line(s.xc, s.yc, w.xc, w.yc);
-      }
-    }
-    if (all_clear) {
-      safe_count++;
-      if (render) {
-        s.render(true);
-      }
-    }
-  }
-  return safe_count;
-}
 
 // Returns the count of wolves that can see this sheep
 // if {render} is true it will render a visualization of sight paths
@@ -197,11 +158,7 @@ void saveState(GameState state, String fileName) {
 boolean repositionSheep(GameState state, Sheep s, int visibleWolfCount, int nTries) {
   for (int i = 0; i < nTries; i++) {
     state.randomizeSheep(s);
-    int safe_count = calculateSafeCount(g_gameState, g_renderAnswer);
-    if (safe_count == 5) {
-      g_solutionFound = true;
-      break;
-    }
+    if (calculateVisibleWolves(state, s, false) == visibleWolfCount) return true; // *********** EARLY RETURN ************
   }
   return false;
 }
