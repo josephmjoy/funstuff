@@ -1,4 +1,4 @@
-class Barrier { //<>//
+class Barrier {
   float xc;
   float yc; // center of barrier
   float len;

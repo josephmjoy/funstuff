@@ -65,6 +65,10 @@ void renderGameState(GameState state) {
     s.render();
     //System.out.println(s.xc);
   }
+  
+  if (false) {
+    renderBarrierIDs(state);
+  }
 }
 
 void renderInteraction(GameState state, Sheep s) {
@@ -159,4 +163,14 @@ boolean repositionSheep(GameState state, Sheep s, int visibleWolfCount, int nTri
     if (calculateVisibleWolves(state, s, false) == visibleWolfCount) return true; // *********** EARLY RETURN ************
   }
   return false;
+}
+
+
+// Renders IDs next to wolves and barriers so we can identify them during puzzle tweaking
+void renderBarrierIDs(GameState state) {
+  fill(0);
+  for (int i = 0; i < state.barriers.length; i++) {
+    Barrier b = state.barriers[i];
+    text(""+i, b.xc - 15, b.yc - 20);
+  }
 }
