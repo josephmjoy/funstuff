@@ -7,7 +7,7 @@ void settings() {
   size(DISPLAY_WIDTH, DISPLAY_HEIGHT);
 }
 
-GameState g_gameState = new GameState(12, "WOOLLYEETTAAINSRH", 5);
+GameState g_gameState = new GameState(12, "ANSWERETTAAINSRH", 5);
 // Wether to render the puzzle+answer or just the puzzle
 boolean g_renderAnswer = true;
 
