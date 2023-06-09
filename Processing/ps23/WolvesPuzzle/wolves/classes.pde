@@ -1,4 +1,4 @@
-class Barrier{
+class Barrier { //<>//
   float xc;
   float yc; // center of barrier
   float len;
@@ -30,7 +30,6 @@ class Barrier{
     strokeWeight(this.thickness);
     line(x1, y1, x2, y2);
   }
-  
 }
 
 
@@ -86,12 +85,11 @@ class Sheep {
     fill(0);
     text(this.c, this.xc - 5, this.yc - 10);
   }
-  
+
   // Not visible by *any* wolf
   void render() {
     render(false);
   }
-  
 }
 
 class GameState {
@@ -99,46 +97,53 @@ class GameState {
   Sheep[] sheep;
   Wolf[] wolves;
 
-  GameState(int nBarriers, int nSheep, int nWolves) {
+  GameState(int nBarriers, String sheepChars, int nWolves) {
     barriers = new Barrier[nBarriers];
     for (int i = 0; i < barriers.length; i++) {
       barriers[i] = new Barrier(MIN_X, MIN_Y);
     }
-    
-    sheep = new Sheep[nSheep];
+
+    sheep = new Sheep[sheepChars.length()];
     for (int i = 0; i < sheep.length; i++) {
-      sheep[i] = new Sheep('X', MIN_X, MIN_Y);
+      sheep[i] = new Sheep(sheepChars.charAt(i), MIN_X, MIN_Y);
     }
-    
+
     wolves = new Wolf[nWolves];
     for (int i = 0; i < wolves.length; i++) {
       wolves[i] = new Wolf(MIN_X, MIN_Y);
     }
   }
-  
+
   // Randomizes the locations and (where applicable) orientations
-  void randomize() { //<>//
-    
+  void randomize() {
+
     // We want to make sure borders do not extend outside the boundaries
     final float DELTA = MIN_BORDER_LEN/2;
     assert(MAX_X > DELTA);
     assert(MAX_Y > DELTA);
-    System.out.println(MAX_X + " " + MAX_Y);
-    for (Barrier b: this.barriers) {
+
+    for (Barrier b : this.barriers) {
       b.xc = random(MIN_X+DELTA, MAX_X-DELTA);
       b.yc = random(MIN_Y+DELTA, MAX_Y-DELTA);
       b.len = random(MIN_BORDER_LEN, MAX_BORDER_LEN);
       b.angle = random(MIN_ANGLE, MAX_ANGLE);
     }
-    
-    for (Sheep s: this.sheep) {
-      s.xc = random(MIN_X, MAX_X);
-      s.yc = random(MIN_Y, MAX_Y);
+
+    for (Sheep s : this.sheep) {
+      // Pick a random barrier and position near it.
+      int i = int(random(this.barriers.length));
+      Barrier b  = this.barriers[i];
+      float max_delta = b.len * SHEEP_BORDER_DISTANCE_FACTOR;
+      float dx = random(-max_delta, max_delta);
+      float dy = random(-max_delta, max_delta);
+      s.xc = constrain(b.xc+dx, MIN_X, MAX_X);
+      s.yc = constrain(b.yc+dy, MIN_Y, MAX_Y);
     }
-    
-    for (Wolf w: this.wolves) {
+
+    for (Wolf w : this.wolves) {
       w.xc = random(MIN_X, MAX_X);
       w.yc = random(MIN_Y, MAX_Y);
     }
   }
+
 }

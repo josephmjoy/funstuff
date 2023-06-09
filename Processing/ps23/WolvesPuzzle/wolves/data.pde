@@ -13,8 +13,11 @@ final float MAX_Y = 0.9*DISPLAY_HEIGHT;
 // Barriers
 final float MIN_ANGLE = -PI/2;
 final float MAX_ANGLE = PI/2;
-final float MIN_BORDER_LEN = 10;
-final float MAX_BORDER_LEN = 10;
+final float MIN_BORDER_LEN = 70;
+final float MAX_BORDER_LEN = 70;
+
+// SHEEP location: how close to barriers
+final float SHEEP_BORDER_DISTANCE_FACTOR = 0.75;
 
 Barrier[] g_barriers = {
   new Barrier(300, 300),
