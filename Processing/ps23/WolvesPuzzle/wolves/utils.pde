@@ -67,21 +67,19 @@ void renderGameState(GameState state) {
   }
 }
 
-// returns the number of safe sheep locations
-// if {render} is true it will render a visualization of sight paths
-// and re-render safe sheep with a safe color
-int calculateSafeCount(GameState state, boolean render) {
-  int safe_count = 0;
-  for (Sheep s : state.sheep) {
-    int visibleWolves = calculateVisibleWolves(state, s, render);
-    if (visibleWolves == 0) {
-      safe_count++;
-      if (render) {
-        s.render(true);
-      }
-    }
+void renderInteraction(GameState state, Sheep s) {
+  int visibleWolves = calculateVisibleWolves(state, s, true);
+  if (visibleWolves == 0) {
+    s.render(true);
   }
-  return safe_count;
+}
+
+// Renders the interactions between sheep and wolves
+// and colors safe sheep
+void renderInteractions(GameState state) {
+  for (Sheep s : state.sheep) {
+    renderInteraction(state, s);
+  }
 }
 
 

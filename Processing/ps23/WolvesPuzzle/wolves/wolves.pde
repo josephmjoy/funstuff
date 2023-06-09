@@ -18,7 +18,7 @@ boolean g_solutionFound = true;
 boolean g_stopRendering = false;
 
 // Number of safe sheep desired
-int g_safeSheepNeeded = 1;
+int g_safeSheepNeeded = 5;
 
 // Current safe sheep found
 int g_curSafeSheepCount = 0;
@@ -43,22 +43,20 @@ void draw() {
   }
 
 
-
-  if (g_renderAnswer) {
-    background(255);
-    renderGameState(g_gameState);
-    calculateSafeCount(g_gameState, true);
-  }
-
   if (g_solutionFound) {
     g_stopRendering = true;
     println("Rendering STOPPED");
+    background(255);
+    renderGameState(g_gameState);
+    if (g_renderAnswer) {
+      renderInteractions(g_gameState);
+    }
   } else {
     // We'll keep trying to find a solution
 
     //int g_safeSheepNeeded = 1;
     //int g_curSafeSheepCount = 0;
-    int MAX_TRIES = 1;
+    int MAX_TRIES = 1000;
     int MIN_VISIBLE_COUNT_FOR_UNSAFE_SHEEP = 1;
     if (g_curSheepIndex < g_gameState.sheep.length) {
       Sheep s = g_gameState.sheep[g_curSheepIndex];
@@ -70,6 +68,7 @@ void draw() {
       }
       boolean success = repositionSheep(g_gameState, s, desiredVisibleWolfCount, MAX_TRIES);
       if (success) {
+        renderInteraction(g_gameState, s);
         if (findMoreSafeSheep) {
           g_curSafeSheepCount++;
         }
@@ -124,11 +123,13 @@ void keyPressed() {
   case 'p':
     println("p: Render only puzzle.");
     g_renderAnswer = false;
+    reRender = true;
     break;
 
   case 'a':
     println("a: Render puzzle and answer.");
     g_renderAnswer = true;
+    reRender = true;
     break;
 
   case 'r':
