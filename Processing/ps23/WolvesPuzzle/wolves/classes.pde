@@ -114,6 +114,19 @@ class GameState {
     }
   }
 
+  // Randomize the specific sheep (which may or may not be in the game state), keeping it close
+  // to a randome border
+  void randomizeSheep(Sheep s) {
+    // Pick a random barrier and position near it.
+    int i = int(random(this.barriers.length));
+    Barrier b  = this.barriers[i];
+    float max_delta = b.len * SHEEP_BORDER_DISTANCE_FACTOR;
+    float dx = random(-max_delta, max_delta);
+    float dy = random(-max_delta, max_delta);
+    s.xc = constrain(b.xc+dx, MIN_X, MAX_X);
+    s.yc = constrain(b.yc+dy, MIN_Y, MAX_Y);
+  }
+
   // Randomizes the locations and (where applicable) orientations
   void randomizeBorders() {
     // We want to make sure borders do not extend outside the boundaries
@@ -131,14 +144,7 @@ class GameState {
 
   void randomizeSheep() {
     for (Sheep s : this.sheep) {
-      // Pick a random barrier and position near it.
-      int i = int(random(this.barriers.length));
-      Barrier b  = this.barriers[i];
-      float max_delta = b.len * SHEEP_BORDER_DISTANCE_FACTOR;
-      float dx = random(-max_delta, max_delta);
-      float dy = random(-max_delta, max_delta);
-      s.xc = constrain(b.xc+dx, MIN_X, MAX_X);
-      s.yc = constrain(b.yc+dy, MIN_Y, MAX_Y);
+      randomizeSheep(s);
     }
   }
 

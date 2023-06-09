@@ -190,3 +190,18 @@ void saveState(GameState state, String fileName) {
     println("Error attemptiong to write to file " + fileName);
   }
 }
+
+
+// Try to reposition the specied sheep so that exactly {visibleWolfCount} can see it.
+// Return true if successful
+boolean repositionSheep(GameState state, Sheep s, int visibleWolfCount, int nTries) {
+  for (int i = 0; i < nTries; i++) {
+    state.randomizeSheep(s);
+    int safe_count = calculateSafeCount(g_gameState, g_renderAnswer);
+    if (safe_count == 5) {
+      g_solutionFound = true;
+      break;
+    }
+  }
+  return false;
+}
