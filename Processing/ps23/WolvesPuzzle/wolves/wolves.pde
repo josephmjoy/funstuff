@@ -29,7 +29,7 @@ int g_curSheepIndex = 0;
 void setup() {
   randomSeed(g_randomSeed);
   //frameRate(1);
-  boolean restore = false;
+  boolean restore = true;
   if (restore) {
     g_gameState.sheep = g_savedSheep;
     g_gameState.barriers = g_savedBarriers;
@@ -152,7 +152,7 @@ void keyPressed() {
     break;
 
   case 'F':
-    String dataFile = "saved_state_NEW.pde";
+    String dataFile = "saved_state.pde";
     println("s: Save date to file " + dataFile);
     reRender = false;
     saveState(g_gameState, dataFile);
