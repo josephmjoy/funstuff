@@ -105,6 +105,7 @@ int calculateVisibleWolves(GameState state, Sheep s, boolean render) {
     if (render) {
       color c = visible? color(255, 0, 0) : color(0, 255, 0);
       stroke(c);
+      strokeWeight(1);
       line(s.xc, s.yc, w.xc, w.yc);
     }
 

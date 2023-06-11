@@ -56,7 +56,7 @@ class Wolf {
 }
 
 class Sheep {
-  char c; // letter associated with this sheep
+  char c; // letter associated with this sheep ('!'== render like a wolf)
   float xc;
   float yc; // center
   float dia;
@@ -74,6 +74,24 @@ class Sheep {
   }
 
   void render(boolean markSafe) {
+    boolean fakeWolf = this.c == '!'; // If true, sheep in wolf's clothing
+
+    if (fakeWolf) {
+      // This is a fake wolf! If marked safe,
+      // render it in special colors. Else render it as a wolf.
+      if (markSafe) {
+        // Green with very thick border.
+        fill(0, 255, 0);
+        strokeWeight(5);
+        stroke(0);
+        ellipse(xc, yc, dia, dia);
+      } else {
+        fill(0);
+        ellipse(xc, yc, 10, 10);
+      }
+      return; // ************************* EARLY RETURN ***************
+    }
+
     if (markSafe) {
       fill(0, 255, 0);
     } else {
@@ -117,6 +135,16 @@ class GameState {
   // Randomize the specific sheep (which may or may not be in the game state), keeping it close
   // to a randome border
   void randomizeSheep(Sheep s) {
+    boolean fakeWolf = s.c == '!';
+    
+    // Fake wolves can be located anywhere!
+    if (fakeWolf) {
+      s.xc = random(MIN_X, MAX_X);
+      s.yc = random(MIN_Y, MAX_Y);
+      //println("FAKE WOLF!");
+      return; // **************************** EARLY RETURN ****************
+    }
+    
     // Pick a random barrier and position near it.
     int i = int(random(this.barriers.length));
     Barrier b  = this.barriers[i];
