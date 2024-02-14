@@ -10,16 +10,16 @@ import processing.svg.*;
 final float SVG_DPI = 96; // this comes from the CSS Specification.
 final float FONT_SIZE = 16;
 // These are in inches...
-final float MAX_RULER_LENGTH = 8;
-final float MAX_RULER_WIDTH = 1;
+final float PAGE_WIDTH = 8.5;
+final float PAGE_HEIGHT = 11.0;
 final float EDGE_OFFSET = 0.25; // from edge to start of RULER
-
+final float RULER_WIDTH = 1.0;
 final boolean TO_SCREEN =true; // true == just display to screen; false == just save to SVG file "output.svg"
 final boolean DRAW_TEXT = true;
 
 // These are in pixels ...
-final int CANVAS_WIDTH = (int) (SVG_DPI * (EDGE_OFFSET + MAX_RULER_LENGTH));
-final int CANVAS_HEIGHT = (int) (SVG_DPI * (EDGE_OFFSET + MAX_RULER_WIDTH));
+final int CANVAS_WIDTH = (int) (SVG_DPI * PAGE_WIDTH);
+final int CANVAS_HEIGHT = (int) (SVG_DPI * PAGE_HEIGHT);
 
 final int TEXT_COLOR = color(0, 0, 0); // black
 final int CUTS_COLOR = color(0, 0, 0); // black
@@ -53,7 +53,7 @@ void draw() {
   // Units are inch ...
   float xOr, yOr;
   xOr = EDGE_OFFSET;
-  yOr = MAX_RULER_WIDTH/2;
+  yOr = RULER_WIDTH/2;
   float len = 5.0;
   // -|-|=
   drawRuler(svg, xOr, yOr, len, 6, -1);
