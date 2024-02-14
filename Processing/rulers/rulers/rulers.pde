@@ -54,11 +54,10 @@ void draw() {
   float xOr, yOr;
   xOr = EDGE_OFFSET;
   yOr = RULER_WIDTH/2;
-  float len = 5.0;
+  float len = 7.49;
   // -|-|=
-  drawRuler(svg, xOr, yOr, len, 6, -1);
-
-
+  drawRuler(svg, xOr, yOr, len, 0, 1);
+  drawRuler(svg, xOr, yOr+2.0, len, 8, -1);
 
   svg.endDraw();
 
@@ -73,11 +72,17 @@ void drawRuler(PGraphics pg, float xOr, float yOr, float len, int digit_start, i
   styleLines(pg);
 
   // In inches
-  float tick_heights[] = {0.75, 0.6, 0.3, 0.2};
+  float max_tick_height = 0.75;
+  float tick_heights[] = {max_tick_height, 0.6, 0.3, 0.2};
   float tick_gaps[] = {1.0, 0.5, 0.25, 0.125};
 
-  // Horizontal line
+  // Horizontal line through the center
   pg.line(pix(xOr), pix(yOr), pix(xOr+len), pix(yOr));
+  
+  // Top and bottom alighment lines
+  float alighment_y_offset = max_tick_height * 0.52;
+  pg.line(pix(xOr), pix(yOr - alighment_y_offset), pix(xOr+len), pix(yOr));
+  pg.line(pix(xOr), pix(yOr + alighment_y_offset), pix(xOr+len), pix(yOr));
 
   // Draw the vertical ticks
   for (int i=0; i < tick_heights.length; i++) {
@@ -85,7 +90,7 @@ void drawRuler(PGraphics pg, float xOr, float yOr, float len, int digit_start, i
   }
 
   // Draw the labels
-  drawDigits(pg, xOr, yOr, len, tick_heights[0], tick_gaps[0], digit_start, digit_step);
+  drawDigits(pg, xOr, yOr, len, max_tick_height * 0.95, tick_gaps[0], digit_start, digit_step);
 }
 
 void drawTicks(PGraphics pg, float xOr, float yOr, float len, float height, float gap) {
