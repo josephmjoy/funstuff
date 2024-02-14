@@ -14,7 +14,7 @@ final float PAGE_WIDTH = 8.5;
 final float PAGE_HEIGHT = 11.0;
 final float EDGE_OFFSET = 0.25; // from edge to start of RULER
 final float RULER_WIDTH = 1.0;
-final boolean TO_SCREEN =false; // true == just display to screen; false == just save to SVG file "output.svg"
+final boolean TO_SCREEN =true; // true == just display to screen; false == just save to SVG file "output.svg"
 final boolean DRAW_TEXT = true;
 
 // These are in pixels ...
@@ -76,18 +76,22 @@ void drawRuler(PGraphics pg, float xOr, float yOr, float len, int digit_start, i
 
   // In inches
   float max_tick_height = 0.75;
-  float tick_heights[] = {max_tick_height, 0.6, 0.3, 0.2};
+  float tick_heights[] = {max_tick_height, 0.6, 0.35, 0.18};
   float tick_gaps[] = {1.0, 0.5, 0.25, 0.125};
 
+  // We extend the horizontal lines left and right by 0.25 inch in each direction
+  // This is to help with alignment - we can crop a vertical strip of paper on each end and have these lines
+  // extend to the edge
+  float extra_x = 0.25; 
   // Horizontal line through the center
-  pg.line(pix(xOr), pix(yOr), pix(xOr+len), pix(yOr));
+  pg.line(pix(xOr - extra_x), pix(yOr), pix(xOr + len + extra_x), pix(yOr));
   
   // Top and bottom alighment lines
   float alighment_y_offset = max_tick_height * 0.55;
   float yOr1 = yOr - alighment_y_offset;
   float yOr2 = yOr + alighment_y_offset;
-  pg.line(pix(xOr), pix(yOr1), pix(xOr+len), pix(yOr1));
-  pg.line(pix(xOr), pix(yOr2), pix(xOr+len), pix(yOr2));
+  pg.line(pix(xOr - extra_x), pix(yOr1), pix(xOr + len + extra_x), pix(yOr1));
+  pg.line(pix(xOr - extra_x), pix(yOr2), pix(xOr + len + extra_x), pix(yOr2));
 
   // Draw the vertical ticks
   for (int i=0; i < tick_heights.length; i++) {
