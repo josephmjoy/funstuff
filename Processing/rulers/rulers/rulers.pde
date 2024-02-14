@@ -14,7 +14,7 @@ final float PAGE_WIDTH = 8.5;
 final float PAGE_HEIGHT = 11.0;
 final float EDGE_OFFSET = 0.25; // from edge to start of RULER
 final float RULER_WIDTH = 1.0;
-final boolean TO_SCREEN =true; // true == just display to screen; false == just save to SVG file "output.svg"
+final boolean TO_SCREEN =false; // true == just display to screen; false == just save to SVG file "output.svg"
 final boolean DRAW_TEXT = true;
 
 // These are in pixels ...
@@ -36,8 +36,7 @@ void setup() {
   if (TO_SCREEN) {
     svg = createGraphics(CANVAS_WIDTH, CANVAS_HEIGHT);
   } else {
-    String txt = DRAW_TEXT ? "" : "-NT";
-    String fn = String.format("ruler-%s.svg", txt);
+    String fn = String.format("rulers.svg");
     println("Output file: " + fn);
     svg = createGraphics(CANVAS_WIDTH, CANVAS_HEIGHT, SVG, fn);
   }
@@ -53,11 +52,15 @@ void draw() {
   // Units are inch ...
   float xOr, yOr;
   xOr = EDGE_OFFSET;
-  yOr = RULER_WIDTH/2;
+  yOr = EDGE_OFFSET + RULER_WIDTH/2;
   float len = 7.49;
-  // -|-|=
+  // Two rulers, counting up
   drawRuler(svg, xOr, yOr, len, 0, 1);
-  drawRuler(svg, xOr, yOr+2.0, len, 8, -1);
+  drawRuler(svg, xOr, yOr + 2.0, len, 0, 1);
+  
+  // Two rulers, counting down
+  drawRuler(svg, xOr, yOr+4.0, len, 8, -1);
+  drawRuler(svg, xOr, yOr+6.0, len, 8, -1);
 
   svg.endDraw();
 
@@ -80,9 +83,11 @@ void drawRuler(PGraphics pg, float xOr, float yOr, float len, int digit_start, i
   pg.line(pix(xOr), pix(yOr), pix(xOr+len), pix(yOr));
   
   // Top and bottom alighment lines
-  float alighment_y_offset = max_tick_height * 0.52;
-  pg.line(pix(xOr), pix(yOr - alighment_y_offset), pix(xOr+len), pix(yOr));
-  pg.line(pix(xOr), pix(yOr + alighment_y_offset), pix(xOr+len), pix(yOr));
+  float alighment_y_offset = max_tick_height * 0.55;
+  float yOr1 = yOr - alighment_y_offset;
+  float yOr2 = yOr + alighment_y_offset;
+  pg.line(pix(xOr), pix(yOr1), pix(xOr+len), pix(yOr1));
+  pg.line(pix(xOr), pix(yOr2), pix(xOr+len), pix(yOr2));
 
   // Draw the vertical ticks
   for (int i=0; i < tick_heights.length; i++) {
@@ -90,7 +95,7 @@ void drawRuler(PGraphics pg, float xOr, float yOr, float len, int digit_start, i
   }
 
   // Draw the labels
-  drawDigits(pg, xOr, yOr, len, max_tick_height * 0.95, tick_gaps[0], digit_start, digit_step);
+  drawDigits(pg, xOr, yOr, len, max_tick_height * 0.9, tick_gaps[0], digit_start, digit_step);
 }
 
 void drawTicks(PGraphics pg, float xOr, float yOr, float len, float height, float gap) {
@@ -109,7 +114,11 @@ void drawDigits(PGraphics pg, float xOr, float yOr, float len, float height, flo
   float yOff = yOr - height/2;
   int n = digit_start;
   while (xOff <= xMax) {
-    drawText(pg, " " + n, xOff, yOff);
+    String label = " " + n;
+    if (n == digit_start) {
+      label += " in";
+    }
+    drawText(pg, label, xOff, yOff);
     xOff += gap;
     n += digit_step; // can be -ve
   }
