@@ -23,9 +23,7 @@ final int CANVAS_HEIGHT = (int) (SVG_DPI * (EDGE_OFFSET + MAX_RULER_WIDTH));
 
 final int TEXT_COLOR = color(0, 0, 0); // black
 final int CUTS_COLOR = color(0, 0, 0); // black
-enum Direction {
-  FORWARD, REVERSE
-};
+
 
 PGraphics svg = null;
 
@@ -48,18 +46,17 @@ void setup() {
 void draw() {
   noLoop();
   svg.beginDraw();
-  PFont myFont = createFont("Cooper Black", FONT_SIZE);
+  PFont myFont = createFont("Helvetica", FONT_SIZE);
   svg.textFont(myFont);
-  svg.textAlign(RIGHT);
+  svg.textAlign(LEFT, TOP);
 
   // Units are inch ...
   float xOr, yOr;
   xOr = EDGE_OFFSET;
   yOr = MAX_RULER_WIDTH/2;
   float len = 5.0;
-  int start_number = 1;
   // -|-|=
-  drawRuler(svg, xOr, yOr, len, start_number, Direction.FORWARD);
+  drawRuler(svg, xOr, yOr, len, 6, -1);
 
 
 
@@ -71,7 +68,7 @@ void draw() {
   svg.dispose();
 }
 
-void drawRuler(PGraphics pg, float xOr, float yOr, float len, int start_number, Direction dir) {
+void drawRuler(PGraphics pg, float xOr, float yOr, float len, int digit_start, int digit_step) {
   styleText(pg);
   styleLines(pg);
 
@@ -88,7 +85,7 @@ void drawRuler(PGraphics pg, float xOr, float yOr, float len, int start_number, 
   }
 
   // Draw the labels
-  drawDigits(pg, xOr, yOr, len, tick_heights[0], tick_gaps[0]);
+  drawDigits(pg, xOr, yOr, len, tick_heights[0], tick_gaps[0], digit_start, digit_step);
 }
 
 void drawTicks(PGraphics pg, float xOr, float yOr, float len, float height, float gap) {
@@ -101,13 +98,15 @@ void drawTicks(PGraphics pg, float xOr, float yOr, float len, float height, floa
   }
 }
 
-void drawDigits(PGraphics pg, float xOr, float yOr, float len, float height, float gap) {
+void drawDigits(PGraphics pg, float xOr, float yOr, float len, float height, float gap, int digit_start, int digit_step) {
   float xOff = xOr;
   float xMax = xOr + len;
   float yOff = yOr - height/2;
+  int n = digit_start;
   while (xOff <= xMax) {
-    drawText(pg, "A", xOff, yOff);
+    drawText(pg, " " + n, xOff, yOff);
     xOff += gap;
+    n += digit_step; // can be -ve
   }
 }
 void styleText(PGraphics pg) {
