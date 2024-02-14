@@ -8,7 +8,7 @@ import processing.svg.*;
 
 
 final float SVG_DPI = 96; // this comes from the CSS Specification.
-final float FONT_SIZE = 32;
+final float FONT_SIZE = 16;
 // These are in inches...
 final float MAX_RULER_LENGTH = 8;
 final float MAX_RULER_WIDTH = 1;
@@ -23,7 +23,9 @@ final int CANVAS_HEIGHT = (int) (SVG_DPI * (EDGE_OFFSET + MAX_RULER_WIDTH));
 
 final int TEXT_COLOR = color(0, 0, 0); // black
 final int CUTS_COLOR = color(0, 0, 0); // black
-enum Direction {FORWARD, REVERSE};
+enum Direction {
+  FORWARD, REVERSE
+};
 
 PGraphics svg = null;
 
@@ -35,10 +37,9 @@ void setup() {
 
   if (TO_SCREEN) {
     svg = createGraphics(CANVAS_WIDTH, CANVAS_HEIGHT);
-
   } else {
     String txt = DRAW_TEXT ? "" : "-NT";
-    String fn = String.format("ruler-%s.svg",  txt);
+    String fn = String.format("ruler-%s.svg", txt);
     println("Output file: " + fn);
     svg = createGraphics(CANVAS_WIDTH, CANVAS_HEIGHT, SVG, fn);
   }
@@ -53,7 +54,8 @@ void draw() {
 
   // Units are inch ...
   float xOr, yOr;
-  xOr = yOr = EDGE_OFFSET;
+  xOr = EDGE_OFFSET;
+  yOr = MAX_RULER_WIDTH/2;
   float len = 5.0;
   int start_number = 1;
   // -|-|=
@@ -72,30 +74,42 @@ void draw() {
 void drawRuler(PGraphics pg, float xOr, float yOr, float len, int start_number, Direction dir) {
   styleText(pg);
   styleLines(pg);
-  
+
   // In inches
   float tick_heights[] = {0.75, 0.6, 0.3, 0.2};
   float tick_gaps[] = {1.0, 0.5, 0.25, 0.125};
-  
+
   // Horizontal line
   pg.line(pix(xOr), pix(yOr), pix(xOr+len), pix(yOr));
-  
-  // Vertical ticks
+
+  // Draw the vertical ticks
   for (int i=0; i < tick_heights.length; i++) {
-    draw_ticks(pg, xOr, yOr, len, tick_heights[i], tick_gap[i]);
+    drawTicks(pg, xOr, yOr, len, tick_heights[i], tick_gaps[i]);
   }
+
+  // Draw the labels
+  drawDigits(pg, xOr, yOr, len, tick_heights[0], tick_gaps[0]);
 }
 
 void drawTicks(PGraphics pg, float xOr, float yOr, float len, float height, float gap) {
   float xOff = xOr;
   float xMax = xOr + len;
-  float yOff = yOr;
+  float yOff = yOr - height/2;
   while (xOff <= xMax) {
     pg.line(pix(xOff), pix(yOff), pix(xOff), pix(yOff + height));
     xOff += gap;
   }
 }
-  
+
+void drawDigits(PGraphics pg, float xOr, float yOr, float len, float height, float gap) {
+  float xOff = xOr;
+  float xMax = xOr + len;
+  float yOff = yOr - height/2;
+  while (xOff <= xMax) {
+    drawText(pg, "A", xOff, yOff);
+    xOff += gap;
+  }
+}
 void styleText(PGraphics pg) {
   pg.fill(TEXT_COLOR);
 }
