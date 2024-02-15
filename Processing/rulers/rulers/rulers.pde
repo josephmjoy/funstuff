@@ -14,7 +14,7 @@ final float PAGE_WIDTH = 8.5;
 final float PAGE_HEIGHT = 11.0;
 final float EDGE_OFFSET = 0.25; // from edge to start of RULER
 final float RULER_WIDTH = 1.0;
-final boolean TO_SCREEN =true; // true == just display to screen; false == just save to SVG file "output.svg"
+final boolean TO_SCREEN =false; // true == just display to screen; false == just save to SVG file "output.svg"
 final boolean DRAW_TEXT = true;
 
 // These are in pixels ...
@@ -53,14 +53,14 @@ void draw() {
   float xOr, yOr;
   xOr = EDGE_OFFSET;
   yOr = EDGE_OFFSET + RULER_WIDTH/2;
-  float len = 7.49;
+  float len = 8.3;
   // Two rulers, counting up
-  drawRuler(svg, xOr, yOr, len, 0, 1);
-  drawRuler(svg, xOr, yOr + 2.0, len, 0, 1);
+  drawRuler(svg, xOr, yOr, len, 1, 1);
+  drawRuler(svg, xOr, yOr + 2.0, len, 2, 1);
   
   // Two rulers, counting down
-  drawRuler(svg, xOr, yOr+4.0, len, 8, -1);
-  drawRuler(svg, xOr, yOr+6.0, len, 8, -1);
+  drawRuler(svg, xOr, yOr+4.0, len, 10, -1);
+  drawRuler(svg, xOr, yOr+6.0, len, 7, -1);
 
   svg.endDraw();
 
@@ -82,7 +82,7 @@ void drawRuler(PGraphics pg, float xOr, float yOr, float len, int digit_start, i
   // We extend the horizontal lines left and right by 0.25 inch in each direction
   // This is to help with alignment - we can crop a vertical strip of paper on each end and have these lines
   // extend to the edge
-  float extra_x = 0.25; 
+  float extra_x = 0.125; 
   // Horizontal line through the center
   pg.line(pix(xOr - extra_x), pix(yOr), pix(xOr + len + extra_x), pix(yOr));
   
