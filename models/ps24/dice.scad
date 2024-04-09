@@ -42,12 +42,21 @@ module face6(width) {
     }
 }
 
-module dice() {
-    cube(10);
+module dice(width) {
+    union() {
+        //cube(width);
+        translate([0, 0, width]) face1(width);
+        rotate([90,0,0]) face2(width);
+        translate([width, 0, 0]) rotate([0, -90, 0]) face3(width);
+        translate([0, 0, 0]) rotate([0, -90, 0]) face4(width);
+        translate([0, width, 0]) rotate([90,0,0]) face5(width);
+        face5(width);
+        face6(width);
+    }
 }
 
 module all() {
-    face6(10);
+    dice(10);
 }
 
 all();
