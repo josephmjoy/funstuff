@@ -66,8 +66,32 @@ module dice(width) {
     }
 }
 
+module rotated_dice(width, rx, ry, rz) {
+    rotate([rx, ry, rz])
+        translate([-width/2, -width/2, -width/2])
+            dice(width);
+}
+
+module sliced_dice(width, rx, ry, rz) {
+    big=2*width;
+    intersection() {
+        translate([0, -big/2, -big/2]) cube([big, big, big]);
+        rotated_dice(width, rx, ry, rz);
+    }
+}
+
+module sliced_dice_pair(rx, ry, rz) {
+    width=10;
+    shift = 2*width;
+    union() {
+        sliced_dice(width, rx, ry, rz);
+        translate([shift, 0, 0]) sliced_dice(width, rx, ry, rz+180);
+    }
+}
+
 module all() {
-    dice(10);
+    //dice(10);
+    sliced_dice_pair(0,0,45);
 }
 
 all();
