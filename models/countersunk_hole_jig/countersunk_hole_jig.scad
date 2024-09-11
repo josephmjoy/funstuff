@@ -12,17 +12,17 @@ i2mm = 25.4; // inch to mm conversion
 clearance = (1/32)*i2mm;
 
 // Diameter of forstner bit used for countersunk hole
-forstner_bit_dia = 1.0*i2mm;
+forstner_bit_dia = 1.0*i2mm;  // 1 for 1/4; 1.25 for 3/8
 
 // Diameter of hole that guides the bit
 bit_guide_dia = 1.0*i2mm + clearance;
 
 // Height of forstner-bit guide. This includes space for
 // the spike below the bit.
-bit_guide_height = 6/8*i2mm;
+bit_guide_height = 5/8*i2mm;
 
 // Diameter of through-hole
-through_hole_dia = 7/16*i2mm;
+through_hole_dia = 5/16*i2mm; // 5/16 for 1/4; 7/16 for 3/8
 
 // The proxy bolt sticks out below the guide for the forstner bit and 
 // sticks into the through_hole
@@ -54,7 +54,7 @@ _EPS = 0.01; // for CSG
 // This is perfectly fine for 3D printed circles of dia 1".
 $fs = 1; 
 
-total_guide_height = bit_guide_height * 1.25 + wall_thickness;
+total_guide_height = bit_guide_height  + wall_thickness;
 
 
 module guide_hole() {
@@ -62,6 +62,8 @@ module guide_hole() {
     cylinder(h=bit_guide_height + _EPS, r=dia/2);
 }
 
+// We're not using this currently as the piece is probably
+// strong enough without the added thickness
 module hulled_guide_hole() {
     union() {
         hull(){
@@ -102,7 +104,7 @@ module threaded_rod_hole() {
 
 module combined_hole() {
     union() {
-        hulled_guide_hole();
+        guide_hole();
         translate([0,0, 2*wall_thickness - _EPS]) threaded_rod_hole();
     };
 }
