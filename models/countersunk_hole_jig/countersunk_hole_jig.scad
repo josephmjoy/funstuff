@@ -54,12 +54,23 @@ _EPS = 0.01; // for CSG
 // This is perfectly fine for 3D printed circles of dia 1".
 $fs = 1; 
 
-total_guide_height = bit_guide_height + wall_thickness;
+total_guide_height = bit_guide_height * 1.25 + wall_thickness;
 
 
 module guide_hole() {
     dia = bit_guide_dia;
     cylinder(h=bit_guide_height + _EPS, r=dia/2);
+}
+
+module hulled_guide_hole() {
+    union() {
+        hull(){
+            guide_hole();
+            translate([0, 0, bit_guide_height])
+                sphere(r=bit_guide_height/4);
+        }
+        cylinder(h=wall_thickness/2, d1=bit_guide_dia+wall_thickness/2, d2=bit_guide_dia);
+    }
 }
 
 // The unit without any holes
@@ -69,30 +80,37 @@ module guide_stock() {
     cylinder(h=ht, r=dia/2);
 }
 
-
 module proxy_bolt() {
     dia = proxy_bolt_dia;
     ht = proxy_bolt_height + _EPS;
     cylinder(h=ht, r=dia/2);
 }
 
+module hulled_proxy_bolt() {
+    hull(){
+        proxy_bolt();
+        translate([0, 0, proxy_bolt_height])
+            sphere(r=proxy_bolt_dia/2);
+    }
+}
+
 module threaded_rod_hole() {
     dia = threaded_rod_dia + clearance;
-    ht = proxy_bolt_height + wall_thickness + 4 *_EPS;
+    ht = proxy_bolt_height + total_guide_height + 4 *_EPS;
     cylinder(h=ht, r=dia/2);
 }
 
 module combined_hole() {
     union() {
-        guide_hole();
-        translate([0,0, bit_guide_height - _EPS]) threaded_rod_hole();
+        hulled_guide_hole();
+        translate([0,0, 2*wall_thickness - _EPS]) threaded_rod_hole();
     };
 }
 
 module combined_stock() {
     union() {
         translate([0, 0, total_guide_height]) {
-            proxy_bolt();
+            hulled_proxy_bolt();
         }
         guide_stock();   
     }
