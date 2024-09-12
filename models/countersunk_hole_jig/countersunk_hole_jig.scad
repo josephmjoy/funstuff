@@ -62,14 +62,16 @@ module guide_hole() {
     cylinder(h=bit_guide_height + _EPS, r=dia/2);
 }
 
-// We're not using this currently as the piece is probably
-// strong enough without the added thickness
+
 module hulled_guide_hole() {
     union() {
-        hull(){
+        // We're not adding the hull bulge as the piece is probably
+        // strong enough without the added thickness
+        // hull()
+        {
             guide_hole();
-            translate([0, 0, bit_guide_height])
-                sphere(r=bit_guide_height/4);
+            //translate([0, 0, bit_guide_height])
+            //    sphere(r=bit_guide_height/4);
         }
         cylinder(h=wall_thickness/2, d1=bit_guide_dia+wall_thickness/2, d2=bit_guide_dia);
     }
@@ -104,7 +106,7 @@ module threaded_rod_hole() {
 
 module combined_hole() {
     union() {
-        guide_hole();
+        hulled_guide_hole();
         translate([0,0, 2*wall_thickness - _EPS]) threaded_rod_hole();
     };
 }
