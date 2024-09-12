@@ -12,17 +12,17 @@ i2mm = 25.4; // inch to mm conversion
 clearance = (1/32)*i2mm;
 
 // Diameter of forstner bit used for countersunk hole
-forstner_bit_dia = 1.0*i2mm;  // 1 for 1/4; 1.25 for 3/8
+forstner_bit_dia = 1.25*i2mm;  // 1 for 1/4; 1.25 for 3/8
 
 // Diameter of hole that guides the bit
-bit_guide_dia = 1.0*i2mm + clearance;
+bit_guide_dia = forstner_bit_dia + clearance;
 
 // Height of forstner-bit guide. This includes space for
 // the spike below the bit.
 bit_guide_height = 5/8*i2mm;
 
 // Diameter of through-hole
-through_hole_dia = 5/16*i2mm; // 5/16 for 1/4; 7/16 for 3/8
+through_hole_dia = 7/16*i2mm; // 5/16 for 1/4; 7/16 for 3/8
 
 // The proxy bolt sticks out below the guide for the forstner bit and 
 // sticks into the through_hole
