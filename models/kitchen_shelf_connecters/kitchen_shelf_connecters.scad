@@ -4,9 +4,9 @@
 // Author: JMJ
 
 
-inner_dia = 4;
-connector_height = 6;
-hole_height = connector_height;
+inner_dia = 4.4;
+connector_height = 10;
+hole_height = connector_height*0.9;
 thickness = 1;
 
 // Min arc length (for cylinders and spheres)
@@ -26,7 +26,7 @@ module ring() {
     translate([0, 0, hole_height/2]) {
         difference() {
             cylinder(d=inner_dia + thickness, thickness);
-            cylinder(d=inner_dia - thickness/2, thickness);
+            cylinder(d=inner_dia - thickness, thickness);
         }
     }
 }
@@ -62,7 +62,7 @@ module corner_connector() {
 }
 
 spacing = inner_dia + 2 * thickness;
-//center_connector();
-//translate([spacing,0,0]) corner_connector();
-translate([0,0,0]) corner_connector();
+center_connector();
+translate([spacing,0,0]) corner_connector();
+translate([0,spacing,0]) corner_connector();
 //hole_punch();
