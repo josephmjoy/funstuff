@@ -34,15 +34,15 @@ def check_median(val, i, nl, ar):
         if val >= ar[right_i] and val <= ar[right_i + 1]:
             return 0 # found it!
         elif val < ar[right_i]:
-            return -1
-        elif val > ar[right_i + 1]:
             return 1
+        elif val > ar[right_i + 1]:
+            return -1
         else:
             assert False
-    elif right_i == nr: # Must be inserted *after* largest element of {ar}
+    elif right_i == nr - 1: # Must be inserted *after* largest element of {ar}
         return 0 if val >= ar[nr - 1] else 1
     else: # i is too small
-        assert right_i >= nl 
+        assert right_i >= nr
         return 1
 
 
@@ -64,7 +64,12 @@ def window_median(al, ar, l1, l2):
     assert 0 <= l1 and l1 < lenl
     assert 0 < l2 and l2 <= lenl # Note window is [l1, l2)
     assert l1 < l2
-    
+    ret = -1
+    for i in range(l1, l2):
+        val = check_median(al[i], i, lenl, ar)
+        if val == 0:
+            ret = i
+    '''
     direction = mid1 = mid = 0
     if direction == -1:
        ret =  window_median(al, ar, l1, mid1)
@@ -73,9 +78,11 @@ def window_median(al, ar, l1, l2):
     else:
        assert direction == 0
        ret = mid
-
+    '''
     return ret
 
+def test_median(al, ar):
+    return window_median(al, ar, 0, len(al))
 N = 4
 #a = [rand.randint(0, N-1) for _ in range(N)]
 a0 = list(range(0,N))
