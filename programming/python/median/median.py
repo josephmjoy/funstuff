@@ -14,36 +14,39 @@ def check_median(val, i, nl, ar):
     nr = len(ar)
     assert nr > 0 # must be at least one element in the right array
     # Let's derive where to look in the right array {ar} for the median to be at {i}
-    #    left_less + right_less = left_greater + right_greater
-    #                           = left_greater + nr - right_less
-    #    left_less = left_greater + nr - 2*right_less
+    # Example: al=[1] ar=[0,2], i = 0, nl = 1, nr=2
+    #    left_less + right_less = left_greater + right_greater # Ex: left_greater = left_less = 0; right_less=right_greater=1
+    #                           = left_greater + nr - right_less # Ex: 0 + 2 - 1 = 1
+    #    left_less = left_greater + nr - 2*right_less # 0 + 2 - 2*1 = 0
     #    2*right_less = nr + left_greater - left_less
     #    right_less = (nr + left_greater - left_less)/2
     #               = (nr + ((nl-1) - i) -i)/2 because left_less = i
     #               = (nr + (nl-1) - 2*i)/2
-    #               = (nr + nl - 1)/2 - i
+    #               = (nr + nl - 1)/2 - i # Ex: (2 + 1 - 1)/2 - 0 = 1
     # If total is even this is an integer
-    # Note: right_less = right_i
-    right_i = (nr + nl - 1)//2 - i
+    # Note: right_i = right_less - 1 # right_i is the index *after* which {val} is to be inserted. Ex: 0
+    right_i = (nr + nl - 1)//2 - i - 1 # Ex: (2 + 1 - 1)//2 - 0 - 1 = 0
     # {val} must be inserted between {right_i} and {right_i + 1}
-    if right_i < -1: # i is too large
-        return -1
+    code = None
+    if right_i < -1:
+        code = 1 # i is too large
     elif right_i == -1: # Must be inserted *before* smallest element of {ar}
-        return 0 if val <= ar[0] else -1
+        code = 0 if val <= ar[0] else 1
     elif right_i < nr - 1: # Must be inserted between {right_i} and {right_i + 1}
         if val >= ar[right_i] and val <= ar[right_i + 1]:
-            return 0 # found it!
+            code = 0  # found
         elif val < ar[right_i]:
-            return 1
+            code = -1 # i is too small
         elif val > ar[right_i + 1]:
-            return -1
+            code = 1 # i is too large
         else:
             assert False
     elif right_i == nr - 1: # Must be inserted *after* largest element of {ar}
-        return 0 if val >= ar[nr - 1] else 1
+        code = 0 if val >= ar[nr - 1] else -1
     else: # i is too small
         assert right_i >= nr
-        return 1
+        code = -1
+    return (code, right_i + 1)
 
 
 
@@ -64,11 +67,13 @@ def window_median(al, ar, l1, l2):
     assert 0 <= l1 and l1 < lenl
     assert 0 < l2 and l2 <= lenl # Note window is [l1, l2)
     assert l1 < l2
-    ret = -1
+    ret = None
     for i in range(l1, l2):
-        val = check_median(al[i], i, lenl, ar)
-        if val == 0:
-            ret = i
+        (code, right_i) = check_median(al[i], i, lenl, ar)
+        if code == 0:
+            ret = (i, right_i)
+            break
+        # print(f'i={i}, val={val}')
     '''
     direction = mid1 = mid = 0
     if direction == -1:
@@ -81,8 +86,16 @@ def window_median(al, ar, l1, l2):
     '''
     return ret
 
+def calc_median(al, ar):
+    m1 = window_median(al, ar, 0, len(al))
+    m2 = window_median(ar, al, 0, len(ar))
+    # r1 = al[i1] if i1 >= 0 and i1 < len(al) else None
+    # r2 = ar[i2] if i2 >= 0 and i2 < len(ar) else None
+    # return ((i1, r1), (i2, r2))
+    return (m1, m2)
+
 def test_median(al, ar):
     return window_median(al, ar, 0, len(al))
-N = 4
-#a = [rand.randint(0, N-1) for _ in range(N)]
-a0 = list(range(0,N))
+
+x = check_median(0, 0, 1, [0,2])
+print(x)
