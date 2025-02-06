@@ -71,7 +71,7 @@ def window_median(al, ar, l1, l2):
     # Special case of l2 == l1 + 1
     if l2 == l1 + 1: # only one item in the window!
         (code, right_i) = check_median(al[l1], l1, lenl, ar)
-        return (0, right_i) if code == 0 else None  #     ------- EARLY RETURN ------
+        return (l1, right_i) if code == 0 else None  #     ------- EARLY RETURN ------
 
     ret = None
     recursive = True
@@ -168,7 +168,7 @@ def test_median():
     from random import randint as randint
     count = 0
     prev_logval = 0
-    for N in range(2, 100):
+    for N in range(2, 200):
         combined = [randint(0, N) for _ in range(0, N)]
         combined_sorted = combined[:]
         combined_sorted.sort()
@@ -185,5 +185,7 @@ def test_median():
                 print(f'N={N} nl = {len(al)} nr = {len(ar)}: PASSED')
                 prev_logval = logval
     print(f'Total tests run: {count}')
+
 if __name__ == '__main__':
-    find_and_verify_median([0], [1,2], True)
+   find_and_verify_median([0], [1,2], True)
+   test_median()
