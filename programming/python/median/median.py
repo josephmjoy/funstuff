@@ -67,23 +67,31 @@ def window_median(al, ar, l1, l2):
     assert 0 <= l1 and l1 < lenl
     assert 0 < l2 and l2 <= lenl # Note window is [l1, l2)
     assert l1 < l2
+
+    # Special case of l2 == l1 + 1
+    if l2 == l1 + 1: # only one item in the window!
+        (code, right_i) = check_median(al[l1], l1, lenl, ar)
+        return (0, right_i) if code == 0 else None  #     ------- EARLY RETURN ------
+
     ret = None
-    for i in range(l1, l2):
-        (code, right_i) = check_median(al[i], i, lenl, ar)
-        if code == 0:
-            ret = (i, right_i)
-            break
-        # print(f'i={i}, val={val}')
-    '''
-    direction = mid1 = mid = 0
-    if direction == -1:
-       ret =  window_median(al, ar, l1, mid1)
-    elif direction == 1:
-       ret =  window_median(al, ar, mid1, l2)
+    recursive = True
+    if not recursive:
+        for i in range(l1, l2):
+            (code, right_i) = check_median(al[i], i, lenl, ar)
+            if code == 0:
+                ret = (i, right_i)
+                break
     else:
-       assert direction == 0
-       ret = mid
-    '''
+        i_mid = (l1 + l2 - 1) // 2  # (l2 is 1 more than max allowable index)
+        (code, right_i) = check_median(al[i_mid], i_mid, lenl, ar)
+        if code == 0:
+            ret = (i_mid, right_i) # found it!
+        elif code == -1: # mid is too low
+            ret =  window_median(al, ar, i_mid + 1, l2) # [imid+1, l2) or [imid+1, l2-1]
+        else: # mid is too high
+            assert code == 1
+            ret =  window_median(al, ar, l1, i_mid + 1) # [l1, imid + 1) or [l1, imid]
+
     return ret
 
 def find_median(al, ar):
@@ -160,7 +168,7 @@ def test_median():
     from random import randint as randint
     count = 0
     prev_logval = 0
-    for N in range(2, 50):
+    for N in range(2, 100):
         combined = [randint(0, N) for _ in range(0, N)]
         combined_sorted = combined[:]
         combined_sorted.sort()
