@@ -86,16 +86,96 @@ def window_median(al, ar, l1, l2):
     '''
     return ret
 
-def calc_median(al, ar):
-    m1 = window_median(al, ar, 0, len(al))
-    m2 = window_median(ar, al, 0, len(ar))
+def find_median(al, ar):
+    wm1 = window_median(al, ar, 0, len(al))
+    wm2 = window_median(ar, al, 0, len(ar))
     # r1 = al[i1] if i1 >= 0 and i1 < len(al) else None
     # r2 = ar[i2] if i2 >= 0 and i2 < len(ar) else None
     # return ((i1, r1), (i2, r2))
-    return (m1, m2)
+    m1 = m2 = None
+    ret = None
+    if wm1 != None:
+        m1 = calc_median(al, wm1[0], ar, wm1[1])
+        ret = m1
+    if wm2 != None:
+        m2 = calc_median(ar, wm2[0], al, wm2[1])
+        ret = m2
+
+    m = ret[0] if ret[1] == None else (ret[0] + ret[1])/2
+    extra = ((wm1, m1), (wm2, m2)) # for debugging
+    return (m, extra)
 
 def test_median(al, ar):
     return window_median(al, ar, 0, len(al))
 
-x = check_median(0, 0, 1, [0,2])
-print(x)
+def calc_median(al, i, ar, j):
+    '''
+    Returns the actual median at al[i], or potentially between al[i] and the next
+    higher element, that could be al[i+1] or ar[j]
+    '''
+    ll = len(al)
+    lr = len(ar)
+    val = al[i]
+    if (ll + lr) % 2 == 1: # total size is odd
+        return (val, None) # Exact median
+    else:
+        if i == ll - 1: # i is the rightmost element of al
+            # TODO assert j == 0
+            nextval = ar[j]
+        else:
+            alnextval = al[i+1]
+            arnextval = ar[j] if j >= 0 and j < lr else alnextval + 1
+            nextval = min(alnextval, arnextval)
+        return (val, nextval)
+
+def verify_sorted(a):
+    assert len(a) > 0
+    prev = a[0]
+    for x in a[1:]:
+        assert prev <= x
+        prev = x
+
+def find_and_verify_median(al, ar, verbose=False):
+    verify_sorted(al)
+    verify_sorted(ar)
+    r = find_median(al, ar)
+    combined = al+ar
+    combined.sort()
+    clen = len(combined)
+    i = clen//2
+    true_median = combined[i] if clen % 2 == 1 else (combined[i-1] + combined[i])/2
+    m, dbg = find_median(al, ar)
+    if verbose or m != true_median:
+        if len(al) + len(ar) <= 30:
+            print(f'al = {al}')
+            print(f'ar = {ar}')
+            print(f'combined = {combined}')
+        print(f'true_median = {true_median}')
+        wm1, m1 = dbg[0]
+        wm2, m2 = dbg[1]
+        print(f'fwd:{(wm1, m1)}, bkwd:{(wm2, m2)} # ((i, j), (m1, m2))')
+        assert m == true_median, 'Incorrect median!'
+
+def test_median():
+    from random import randint as randint
+    count = 0
+    prev_logval = 0
+    for N in range(2, 50):
+        combined = [randint(0, N) for _ in range(0, N)]
+        combined_sorted = combined[:]
+        combined_sorted.sort()
+        for nl in range(1, N):
+            al = combined[:nl]
+            ar = combined[nl:]
+            al.sort()
+            ar.sort()
+            find_and_verify_median(al, ar)
+            from math import log as log
+            count += 1
+            logval = log(count, 10)
+            if logval > prev_logval + 1:
+                print(f'N={N} nl = {len(al)} nr = {len(ar)}: PASSED')
+                prev_logval = logval
+    print(f'Total tests run: {count}')
+if __name__ == '__main__':
+    find_and_verify_median([0], [1,2], True)
