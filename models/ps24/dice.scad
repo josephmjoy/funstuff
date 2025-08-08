@@ -85,13 +85,23 @@ module sliced_dice_pair(rx, ry, rz) {
     shift = 2*width;
     union() {
         sliced_dice(width, rx, ry, rz);
-        translate([shift, 0, 0]) sliced_dice(width, rx, ry, rz+180);
+        translate([shift, 0, shift]) sliced_dice(width, rx, ry, rz+180);
     }
 }
 
 module all() {
-    //dice(10);
-    sliced_dice_pair(0,0,45);
+
+    
+    //sliced_dice_pair(0,0,45);
+    //sliced_dice_pair(0,0,45+90);
+    
+    //sliced_dice_pair(0,45,0);
+    //sliced_dice_pair(0,45+90,0);
+    
+    sliced_dice_pair(45,90,0);
+    //sliced_dice_pair(45+90,90,0);
+
+
 }
 
 all();
