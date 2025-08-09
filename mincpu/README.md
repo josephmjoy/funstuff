@@ -7,13 +7,13 @@ https://docs.google.com/document/d/17AJ7x4v8D95TJLc58pEsGX3iTWN-aZa6sDZFsPrQbjg/
 
 # Scratch
 
-1. def main():
-2. 	x = sum(3, 5)
-3.	print(x)
-4.      y = x
+def main():
+    x = sum(3, 5)
+    print(x)
+    y = x
 
 def sum(i, j):
-	return i + j
+    return i + j
 
 
 
