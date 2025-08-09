@@ -2,7 +2,7 @@
 
 
 ## Working Doc
-ttps://docs.google.com/document/d/17AJ7x4v8D95TJLc58pEsGX3iTWN-aZa6sDZFsPrQbjg/
+https://docs.google.com/document/d/17AJ7x4v8D95TJLc58pEsGX3iTWN-aZa6sDZFsPrQbjg/
 
 
 # Scratch
