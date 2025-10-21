@@ -40,16 +40,9 @@ module base_plate() {
     }
 }
 
-module test() {
-    shape2d();
-}
-
-
 module final() {
   rotate_extrude() shape2d();
 } 
     
-    
-// test();
 final();
         
