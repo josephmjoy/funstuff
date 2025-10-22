@@ -2,6 +2,7 @@
 // a shape (like a climbing hold).
 // {r} is the radius.
 
+$fn = 50;
 I2MM = 25.4;
 
 module spacer_disk_template(r) {
