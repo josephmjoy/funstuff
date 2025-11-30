@@ -20,11 +20,11 @@ module shape2d() {
     w = (outer_dia - hole_dia)/2;
     ri = inner_rounding_radius;
     ro = outer_rounding_radius;
-    shape = [[0, 0], [0, h], [ri + ri*0.5, h], [w, ro], [w, 0]];
+    shape = [[0, 0], [0, h], [ri + ri*0.5, h], [w, ro/2], [w, 0]];
     radii = [0, ri, ri, ro, 0];
     x = round_corners(shape, radius = radii);
     polygon(x);
-    //polygon(shape);
+    // polygon(shape);
 }
 
 
@@ -53,13 +53,13 @@ module shape2dx() {
 
 
 module final() {
-  rotate_extrude() shape2d();
+  rotate_extrude() translate([hole_dia/2, 0, 0]) shape2d();
 }
 
 module test() {
   shape2d();
 }
     
-//final();
-test();
+final();
+//test();
        
