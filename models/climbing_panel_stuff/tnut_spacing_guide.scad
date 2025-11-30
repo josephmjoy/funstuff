@@ -5,6 +5,7 @@ $fn = 50;
 I2MM = 25.4;
 dist = 6 * I2MM; // square spacing.
 diag_dist = sqrt(2) * dist; // diagonal
+clearance = 1.5 * I2MM; // Min distance from hole center to edge
 width = 0.75 * I2MM;
 notch_edge = 0.1 * I2MM;
 thickness = 2; // ruler thickness
@@ -28,9 +29,19 @@ module ruler_blank() {
         union() {
             disk(0, r, r);
             disk(dist, r, r);
+            disk(dist + clearance, r, r);
             disk(diag_dist, r, r);
+            disk(diag_dist + clearance, r, r);
         }
     }
+}
+
+module notch_punchouts(x) {
+    r = width/2;
+    notch(x, -r);
+    notch(x, +r);
+    notch(x+r, 0);
+    notch(x-r, 0);
 }
 
 module ruler_punchouts() {
@@ -40,15 +51,12 @@ module ruler_punchouts() {
     union() {
         disk(0, r1, r2);
         disk(dist, r1, r2);
+        disk(dist + clearance, r1, r2);
         disk(diag_dist, r1, r2);
-        notch(-r, 0);
-        notch(0, r);
-        notch(0, -r);
-        notch(dist, r);
-        notch(dist, -r);
-        notch(diag_dist, r);
-        notch(diag_dist, -r);
-        notch(diag_dist + r, 0);
+        disk(diag_dist + clearance, r1, r2);
+        notch_punchouts(0);
+        notch_punchouts(dist);
+        notch_punchouts(diag_dist);
     }
 }
 
