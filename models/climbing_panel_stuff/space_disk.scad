@@ -12,4 +12,6 @@ module spacer_disk_template(r) {
     }
 }
 
-spacer_disk_template(0.75*I2MM);
+translate([0, 0, 0]) spacer_disk_template(0.75*I2MM);
+translate([0, 2*I2MM, 0]) spacer_disk_template(0.5*I2MM);
+translate([0, 4*I2MM, 0]) spacer_disk_template(0.5*I2MM);
