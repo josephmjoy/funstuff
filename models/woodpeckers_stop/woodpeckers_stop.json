@@ -1,0 +1,12 @@
+{
+    "parameterSets": {
+        "design default values": {
+            "$fn": "200",
+            "diameter": "10",
+            "extrusionWidth": "0.4",
+            "height": "20",
+            "layerHeight": "0"
+        }
+    },
+    "fileFormatVersion": "1"
+}
