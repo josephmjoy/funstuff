@@ -6,10 +6,13 @@ wall_height = 5;
 dpi = 884/4; // Map 864 pixel or original to 4"
 
 module dance2d() {
-    //import("hh10.svg", dpi=dpi);
-    //import("hh10orig.svg", dpi=dpi);
-    //import("rect.svg");
-    import("hh10fat.svg", dpi=dpi);
+    union() {
+        //import("hh10.svg", dpi=dpi);
+        //import("hh10orig.svg", dpi=dpi);
+        //import("rect.svg");
+        translate([0, 0, 0]) import("hh10_upper.svg", dpi=dpi);
+        import("hh10_lower.svg", dpi=dpi);
+    }
 }
 
 module expanded_dance2d_mink() {
@@ -54,7 +57,7 @@ module outline2() {
 
 
 artwork();
-//linear_extrude(10) import("hh10orig.svg");
 //cube([10, 10, 10]);
 //linear_extrude(10) dance2d();
 //linear_extrude(10) dance2d();
+//dance2d();
