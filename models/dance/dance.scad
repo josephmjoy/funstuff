@@ -1,17 +1,21 @@
 // Dance wall ornaments
 // Author: JMJ
-wall_thickness = 1;
+wall_thickness = 1.5;
 base_thickness = 1.5;
 wall_height = 5;
-dpi = 884/4; // Map 864 pixel or original to 4"
+//dpi = 884/4; // Map 864 pixel or original to 4"
+//dpi = 92/4;
+dpi = 74.8/4;
 
 module dance2d() {
     union() {
-        //import("hh10.svg", dpi=dpi);
+        //import("hh10_orig.svg", dpi=dpi);
+        //import("01-42.svg", dpi=dpi);
+        import("01-19.svg", dpi=dpi);
         //import("hh10orig.svg", dpi=dpi);
         //import("rect.svg");
-        translate([0, 0, 0]) import("hh10_upper.svg", dpi=dpi);
-        import("hh10_lower.svg", dpi=dpi);
+        //translate([0, 0, 0]) import("hh10_upper.svg", dpi=dpi);
+        //import("hh10_lower.svg", dpi=dpi);
     }
 }
 
@@ -56,8 +60,11 @@ module outline2() {
 }
 
 
-artwork();
+//artwork();
 //cube([10, 10, 10]);
 //linear_extrude(10) dance2d();
 //linear_extrude(10) dance2d();
 //dance2d();
+artwork();
+//import("hh10_orig.svg", dpi=dpi);
+//expanded_dance2d_mink();
