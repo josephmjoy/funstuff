@@ -1,5 +1,12 @@
 D More recent notes come first.
 ## March 13, 2026
+I dynamically define the `I2CDisplayBus` class as either from `displayio` (pre 9.x) or from i2cdisplay` where it is called `I2CDisplay`. CircuitPython version is determined by:
+``
+ver, *_ = sys.implementation.version
+```
+Also print the actual version. FStrings work in CircuitPython!
+
+## March 13, 2026
 Changes from the previous version (which worked on Wokwi simulator):
 > Needed to add libraries to Thonny. To do this, lookup
 The packages in question were:
