@@ -1,4 +1,7 @@
 # Pi Pico Demo using thei SSD1306 Oled display 
+This version displays some text on the real Raspberry Pi. It won't work as-is
+on the Wokwi simulator because the CircuitPython versions are different.
+Perhaps get it to conditinally work on either by checking the version at run time - see `notes.md` on how to determine the version.
 
 # Origin
 I asked Gemini to create the code with this prompt:
@@ -15,3 +18,6 @@ added by default it seems:
 > adafruit_display_text
 
 With these changes, the simulator worked fine!
+
+# Getting to work on real HW
+The CircuitPython version on WokWi is 8.x while on the real device (via Thonny) it is 10.x. So needed to change how the `display_bus` was created. See `notes.md` for more info.
