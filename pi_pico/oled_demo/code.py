@@ -1,6 +1,14 @@
 import board
 import busio
 import displayio
+
+import sys
+ver, *_ = sys.implementation.version
+if ver >= 9:
+    from  i2cdisplaybus import I2CDisplayBus as I2CDisplayBus
+else:    
+    from  displayio import I2CDisplay as I2CDisplayBus
+
 import terminalio
 from adafruit_display_text import label
 # import adafruit_ssd1306
@@ -12,7 +20,8 @@ displayio.release_displays()
 i2c = busio.I2C(board.GP1, board.GP0)
 
 # 3. Define display bus and dimensions
-display_bus = displayio.I2CDisplay(i2c, device_address=0x3C)
+
+display_bus = I2CDisplayBus(i2c, device_address=0x3C)
 WIDTH = 128
 HEIGHT = 32  # Specified resolution
 BORDER = 2
@@ -30,7 +39,7 @@ label1 = label.Label(terminalio.FONT, text=text_line1, color=0xFFFF, x=5, y=5)
 splash.append(label1)
 
 # Line 2
-text_line2 = "CircuitPython 9.x"
+text_line2 = f"CircuitPython {ver}.x"
 label2 = label.Label(terminalio.FONT, text=text_line2, color=0xFFFF, x=5, y=15)
 splash.append(label2)
 
