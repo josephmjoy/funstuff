@@ -3,10 +3,13 @@ Pico OLED Demo Main Entry Point
 Demonstrates real-time uptime tracking and multi-row text rendering on an SSD1306 OLED.
 Configured for Raspberry Pi Pico (GP0/GP1) and 128x32 resolution.
 """
+
+import sys
+import time
+
 import board
 import busio
-import time
-import sys
+
 from display import Display
 
 # 1. Get CircuitPython version for display

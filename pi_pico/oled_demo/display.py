@@ -3,7 +3,9 @@ SSD1306 OLED Display Management Module
 Handles initialization and text rendering for 128x32 I2C displays on Raspberry Pi Pico.
 Supports CircuitPython 8.x - 10.x through dynamic I2CDisplayBus imports.
 """
+
 import sys
+
 import board
 import busio
 import displayio
@@ -22,8 +24,16 @@ else:
 BORDER = 2
 FONT = terminalio.FONT
 
+
 class Display:
-    def __init__(self, i2c_bus: busio.I2C, device_address: int, height: int, width: int, nlines: int) -> None:
+    def __init__(
+        self,
+        i2c_bus: busio.I2C,
+        device_address: int,
+        height: int,
+        width: int,
+        nlines: int,
+    ) -> None:
         """
         Initialize the OLED display manager.
 
@@ -63,16 +73,19 @@ class Display:
             inner_bitmap = displayio.Bitmap(inner_w, inner_h, 1)
             inner_palette = displayio.Palette(1)
             inner_palette[0] = 0x0000
-            inner_sprite = displayio.TileGrid(inner_bitmap, pixel_shader=inner_palette, x=BORDER, y=BORDER)
+            inner_sprite = displayio.TileGrid(
+                inner_bitmap, pixel_shader=inner_palette, x=BORDER, y=BORDER
+            )
             self._splash.append(inner_sprite)
 
         # Setup labels for text rows
         self._labels = []
         usable_height = height - (2 * BORDER)
         step = usable_height / nlines
-        
+
         for i in range(nlines):
-            # Calculate vertical position (y). Using 0.75 weight to align closer to original manual placement.
+            # Calculate vertical position (y).
+            # Using 0.75 weight to align closer to original manual placement.
             y_pos = int(BORDER + (i + 0.75) * step)
             lbl = label.Label(FONT, text="", color=0xFFFF, x=BORDER + 3, y=y_pos)
             self._splash.append(lbl)
@@ -98,8 +111,11 @@ class Display:
         :raises ValueError: If the list length exceeds the number of display rows.
         """
         if len(rows) > self._nlines:
-            raise ValueError(f"List length {len(rows)} exceeds number of display rows ({self._nlines})")
-        
+            raise ValueError(
+                f"List length {len(rows)} exceeds number of "
+                f"display rows ({self._nlines})"
+            )
+
         for i, text in enumerate(rows):
             if text is not None:
                 self.set_row(i, text)
