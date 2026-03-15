@@ -1,5 +1,11 @@
+"""
+SSD1306 OLED Display Management Module
+Handles initialization and text rendering for 128x32 I2C displays on Raspberry Pi Pico.
+Supports CircuitPython 8.x - 10.x through dynamic I2CDisplayBus imports.
+"""
 import sys
 import board
+import busio
 import displayio
 import terminalio
 from adafruit_display_text import label
@@ -17,7 +23,16 @@ BORDER = 2
 FONT = terminalio.FONT
 
 class Display:
-    def __init__(self, i2c_bus, device_address: int, height: int, width: int, nlines: int):
+    def __init__(self, i2c_bus: busio.I2C, device_address: int, height: int, width: int, nlines: int) -> None:
+        """
+        Initialize the OLED display manager.
+
+        :param i2c_bus: The initialized I2C bus object.
+        :param device_address: The I2C address of the SSD1306 (typically 0x3C).
+        :param height: Display height in pixels (e.g., 32).
+        :param width: Display width in pixels (e.g., 128).
+        :param nlines: Number of text rows to manage.
+        """
         self._nlines = nlines
         self._height = height
         self._width = width
@@ -64,11 +79,24 @@ class Display:
             self._labels.append(lbl)
 
     def set_row(self, row: int, text: str) -> None:
+        """
+        Set the text of a specific row.
+
+        :param row: Zero-indexed row number.
+        :param text: String to display in the row.
+        :raises ValueError: If the row index is out of range.
+        """
         if row < 0 or row >= self._nlines:
             raise ValueError(f"Row index {row} out of range (0-{self._nlines - 1})")
         self._labels[row].text = text
 
-    def set_rows(self, rows: list[str]) -> None:
+    def set_rows(self, rows: list[str | None]) -> None:
+        """
+        Set multiple rows of text at once.
+
+        :param rows: List of strings (or None to skip a row).
+        :raises ValueError: If the list length exceeds the number of display rows.
+        """
         if len(rows) > self._nlines:
             raise ValueError(f"List length {len(rows)} exceeds number of display rows ({self._nlines})")
         
@@ -77,5 +105,8 @@ class Display:
                 self.set_row(i, text)
 
     def clear_rows(self) -> None:
+        """
+        Clear all text rows on the display.
+        """
         for lbl in self._labels:
             lbl.text = ""
