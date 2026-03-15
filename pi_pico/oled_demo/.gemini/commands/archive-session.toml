@@ -1,0 +1,13 @@
+description = "Summarize and prepend the current session to gemini_discussion_history.md"
+prompt = """Summarize our discussion today and prepend it to @gemini_discussion_history.md.
+
+Follow these rules:
+1. Use a level-2 (##) heading with today's date and a descriptive title. If I provide a title as an argument, use that; otherwise, create a concise one based on the session's main topic.
+2. Insert this new entry directly after the main "# Gemini CLI Discussion History" title, maintaining a "newest first" order.
+3. Focus exclusively on the human-AI interaction. Do not include agent actions, tool calls, or technical logs.
+4. Structure the summary with:
+   - An "### Summary of Interaction" overview.
+   - "####" subheadings for significant milestones (e.g., "#### 1. Design Phase").
+   - Verbatim extracts of key questions from Gemini and significant responses from the user.
+5. Use the provided argument '{{args}}' as the descriptive title if it exists.
+"""
