@@ -19,3 +19,5 @@ This project controls an SSD1306 OLED display (128x32) using CircuitPython on a 
 - **Code Style**:
   - Prefer `displayio` for all UI elements (Groups, Labels, Bitmaps).
   - Use `display.root_group = splash` to set the main display group.
+- **Source Control**:
+  - ALWAYS prefix commit message titles with `[AI Generated]`.
