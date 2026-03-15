@@ -1,53 +1,70 @@
 import board
 import busio
 import displayio
-
+import terminalio
 import sys
+import time
+from adafruit_display_text import label
+import adafruit_displayio_ssd1306 as ssd1306
+
+# 1. Handle CircuitPython version-specific imports for I2C bus
 ver, *_ = sys.implementation.version
 if ver >= 9:
-    from  i2cdisplaybus import I2CDisplayBus as I2CDisplayBus
-else:    
-    from  displayio import I2CDisplay as I2CDisplayBus
+    from i2cdisplaybus import I2CDisplayBus
+else:
+    from displayio import I2CDisplay as I2CDisplayBus
 
-import terminalio
-from adafruit_display_text import label
-# import adafruit_ssd1306
-import adafruit_displayio_ssd1306 as ssd1306
-# 1. Release any resources currently in use for the display
+# 2. Release any resources currently in use for the display
 displayio.release_displays()
 
-# 2. Setup I2C (GP0 = SDA, GP1 = SCL)
+# 3. Setup I2C (GP0 = SDA, GP1 = SCL on Raspberry Pi Pico)
 i2c = busio.I2C(board.GP1, board.GP0)
 
-# 3. Define display bus and dimensions
+# 4. Define display dimensions and bus
+WIDTH = 128
+HEIGHT = 32  # Standard for many Pico OLED hats
+BORDER = 2
 
 display_bus = I2CDisplayBus(i2c, device_address=0x3C)
-WIDTH = 128
-HEIGHT = 32  # Specified resolution
-BORDER = 2
-#print(dir(ssd1306))
 display = ssd1306.SSD1306(display_bus, width=WIDTH, height=HEIGHT)
 
-# 4. Create a Display Group to hold our text elements
+# 5. Create a Display Group and background
 splash = displayio.Group()
 display.root_group = splash
 
-# 5. Create three lines of text
-# Line 1
-text_line1 = "Pico Dev System"
-label1 = label.Label(terminalio.FONT, text=text_line1, color=0xFFFF, x=5, y=5)
+# Draw a simple border if requested
+if BORDER > 0:
+    # Outer white frame
+    bg_bitmap = displayio.Bitmap(WIDTH, HEIGHT, 1)
+    bg_palette = displayio.Palette(1)
+    bg_palette[0] = 0xFFFF  # White
+    bg_sprite = displayio.TileGrid(bg_bitmap, pixel_shader=bg_palette, x=0, y=0)
+    splash.append(bg_sprite)
+
+    # Inner black area
+    inner_w = WIDTH - (BORDER * 2)
+    inner_h = HEIGHT - (BORDER * 2)
+    inner_bitmap = displayio.Bitmap(inner_w, inner_h, 1)
+    inner_palette = displayio.Palette(1)
+    inner_palette[0] = 0x0000  # Black
+    inner_sprite = displayio.TileGrid(inner_bitmap, pixel_shader=inner_palette, x=BORDER, y=BORDER)
+    splash.append(inner_sprite)
+
+# 6. Create text labels with improved spacing
+label1 = label.Label(terminalio.FONT, text="Pico Dev System", color=0xFFFF, x=BORDER+3, y=8)
 splash.append(label1)
 
-# Line 2
-text_line2 = f"CircuitPython {ver}.x"
-label2 = label.Label(terminalio.FONT, text=text_line2, color=0xFFFF, x=5, y=15)
+label2 = label.Label(terminalio.FONT, text=f"CircuitPython {ver}.x", color=0xFFFF, x=BORDER+3, y=18)
 splash.append(label2)
 
-# Line 3
-text_line3 = "Status: Running"
-label3 = label.Label(terminalio.FONT, text=text_line3, color=0xFFFF, x=5, y=25)
+label3 = label.Label(terminalio.FONT, text="Uptime: 0s", color=0xFFFF, x=BORDER+3, y=28)
 splash.append(label3)
 
-# The code will automatically stay on screen until updated or reset
+# 7. Dynamic update loop
+print(f"Starting display loop (v{ver}.x)...")
+start_time = time.monotonic()
+
 while True:
-    pass
+    uptime = int(time.monotonic() - start_time)
+    label3.text = f"Uptime: {uptime}s"
+    time.sleep(1)
