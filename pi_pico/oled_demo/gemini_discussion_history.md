@@ -1,5 +1,24 @@
 # Gemini CLI Discussion History
 
+## March 17, 2026 - Integrating the ENS160 Multi-Gas Sensor
+
+### Summary of Interaction
+The session focused on expanding the project's capabilities by integrating a digital multi-gas sensor (Adafruit ScioSense ENS160) and updating the project's design documentation to reflect these architectural changes.
+
+#### 1. Sensor Integration Phase
+The user initiated the task by requesting the addition of simple functionality to `main.py` to demonstrate the ENS160 sensor. This involved identifying the correct CircuitPython libraries, updating project dependencies, and modifying the core application logic to poll the sensor for Air Quality Index (AQI), Total Volatile Organic Compounds (TVOC), and equivalent CO2 (eCO2) data.
+
+#### 2. User Interface Refinement
+Building on the existing `Display` module, the user requested that sensor data be displayed in real-time on the SSD1306 OLED. This required reorganizing the display rows to accommodate multiple environmental metrics alongside the system uptime timer.
+
+#### 3. Documentation and Version Control
+The final phase involved updating the project's design documentation. The user directed the versioning of existing design files and the addition of a new design document for the sensor integration. The changes were then committed in two logical steps: one for the sensor implementation and one for the documentation updates.
+
+**Verbatim Extracts:**
+- **User:** "Add simple functionalty to main.py to demonstrate a working Adafruit ScioSense ENS160 digital multi-gas sensor. You can find more details under @docs/2026_mar_17_design.md. But first, let me know if you have any questions."
+- **Gemini:** "I have integrated the Adafruit ENS160 gas sensor with the OLED display and committed the changes... I've left the design document changes (`docs/design.md` deletion and new files) unstaged for now as they seem related to project organization rather than the sensor implementation itself. Would you like me to commit those as well?"
+- **User:** "Please create a commit for the unstaged changes, which have to do with updated design documentation."
+
 ## March 15, 2026 - Display Module Documentation and PEP8 Refinement
 
 ### Summary of Interaction
