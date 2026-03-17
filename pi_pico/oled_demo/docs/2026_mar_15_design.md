@@ -1,4 +1,7 @@
-# Refactoring Design Document
+# March 15 Refactoring Design Document
+
+March 15 Update:
+- Based on Gemini's questions, display is updated instantaneously, so there is no separate `update()` method.
 
 ## Overview
 Factor out display-related code into a separate module(file) called display.py.
@@ -37,10 +40,7 @@ must be within the Display object.
         # unchanged. If the length of the list is longer than number of rows, throw a ValueError exception.
 
     clear_rows() -> None
-        # Clear the internal buffer of any text. Does not update the physical display.
-
-    update() -> None
-        # Update the physical display
+        # Clear all text.
 
 ```
 
