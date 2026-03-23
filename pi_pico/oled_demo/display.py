@@ -6,7 +6,6 @@ Supports CircuitPython 8.x - 10.x through dynamic I2CDisplayBus imports.
 
 import sys
 
-import board
 import busio
 import displayio
 import terminalio
