@@ -1,0 +1,6 @@
+# 2026 April 15 Getting the AQI demo to work
+TODO:
+- Move Gemini context one level up from oled_demo, so multiple pico projecfts under it
+  can share the same context.
+- Create a scan project that just scans the bus
+
