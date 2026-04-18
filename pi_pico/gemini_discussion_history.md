@@ -1,5 +1,22 @@
 # Gemini CLI Discussion History
 
+## April 18, 2026 - i2c_scanner Project Setup and Troubleshooting
+
+### Summary of Interaction
+The session involved committing the `i2c_scanner` subproject to the repository and troubleshooting a hardware resource conflict on the Raspberry Pi Pico.
+
+#### 1. Troubleshooting Phase
+Upon running the code, the user encountered a `ValueError: GP1 in use` error. Gemini identified that the error was likely due to the `displayio` module from a previous session (like the `oled_demo`) still holding a lock on the I2C pins.
+
+#### 2. Hardware Management
+The user inquired about resetting the device without adding extra "cleanup" code to `code.py`. Gemini explained the difference between soft resets (which often persist `displayio` state) and hard resets. The user confirmed that a hard reset (unplugging/replugging) successfully resolved the issue.
+
+**Verbatim Extracts:**
+- **User:** "Running the code in @i2c_scanner/** on the pico, I get this error: Traceback (most recent call last): File \"<stdin>\", line 7, in <module> ValueError: GP1 in use"
+- **User:** "how do I reset or restart the device so that it doesn't try to grab the display -"
+- **User:** "I'm using the thonny editor. I don't want to add the release_display function, to keep code.py small. Can I use thonny to reset or should I go to the pico to fix this?"
+- **User:** "CTRL-D didn't work, but unplugging/replugging the device worked. All good."
+
 ## March 17, 2026 - Documentation and Diagramming of Display Class
 
 ### Summary of Interaction
