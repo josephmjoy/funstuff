@@ -1,5 +1,17 @@
 # Gemini CLI Discussion History
 
+## April 18, 2026 - Troubleshooting Standalone Execution on Raspberry Pi Pico
+
+### Summary of Interaction
+The user reported that their OLED project remained black when powered independently, even though it functioned perfectly when triggered via Thonny's "Play" button. Gemini identified that the issue was due to the absence of a `code.py` file on the microcontroller's filesystem.
+
+#### 1. Standalone Execution Analysis
+Gemini explained the technical difference between Thonny's execution method (streaming code directly to the REPL in RAM) and CircuitPython's standalone boot sequence (searching for `code.py` on the flash storage). Instructions were provided to save the script permanently to the board to enable automatic execution on power-up.
+
+**Verbatim Extracts:**
+- **User:** "So this program works when run directly from Thonny, but not when run stand-alone. I just noticed something: the code.py file is missing from the microcontroller! But it does work when I hit the play-button from Thonny, though code.py is not on the microcontroller. Can you explain?"
+- **Gemini:** "When you click the 'Play' button in Thonny, it sends the code from your editor directly to the microcontroller's memory via the REPL (Read-Eval-Print Loop) and executes it immediately. ... To make your program run automatically when you plug the Pico into a power source, you must save the file to the microcontroller: ... Name the file exactly code.py."
+
 ## April 18, 2026 - Fixing OLED Black Screen on Power Bank
 
 ### Summary of Interaction
