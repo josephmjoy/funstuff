@@ -1,5 +1,21 @@
 # Gemini CLI Discussion History
 
+## April 18, 2026 - Fixing OLED Black Screen on Power Bank
+
+### Summary of Interaction
+The user reported that their Raspberry Pi Pico OLED project functioned correctly when connected to a laptop but resulted in a black/unlit display when powered by a USB power bank. Gemini diagnosed this as a race condition where the microcontroller boots and attempts I2C communication before the ENS160 sensor and OLED display have stabilized their power states. The session resulted in a more robust `code.py` featuring startup delays and error handling.
+
+#### 1. Diagnosis and Planning
+Gemini explained that the USB enumeration on a laptop often introduces a natural delay that allows peripherals to wake up, whereas a power bank provides immediate power, causing the script to crash on early I2C failures. Gemini presented several options for resolution, and the user chose to implement both a startup delay and comprehensive error handling.
+
+#### 2. Implementation and Robustness
+Gemini refactored `oled_demo/code.py` to include a 1.5-second startup delay. Furthermore, the ENS160 initialization and data-reading loop were wrapped in `try...except` blocks. This ensures that even if a sensor is missing or slow to start, the OLED display remains active and provides visual feedback (e.g., "Sensor Error") instead of crashing and staying black.
+
+**Verbatim Extracts:**
+- **Gemini:** "A common issue when powering microcontrollers from a power bank is that the board boots up faster than the I2C sensors. When connected to a laptop, the USB enumeration or power characteristics often introduce just enough delay for the sensors to be ready. ... How would you like to proceed?"
+- **User:** "Add Delay & Error Handling"
+
+
 ## April 18, 2026 - i2c_scanner Project Setup and Troubleshooting
 
 ### Summary of Interaction
