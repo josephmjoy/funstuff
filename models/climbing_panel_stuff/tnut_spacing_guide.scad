@@ -3,12 +3,21 @@
 
 $fn = 50;
 I2MM = 25.4;
+AFTER_DRILLING = true; // To make after-drilling check guide
+
+// This is to make the whole thing wider since the holes are 
+// larger
+extra_width = AFTER_DRILLING ? 0.25 * I2MM : 0;
+
+
 dist = 6 * I2MM; // square spacing.
 diag_dist = sqrt(2) * dist; // diagonal
-clearance = 1.5 * I2MM; // Min distance from hole center to edge
-width = 0.75 * I2MM;
+clearance = 1.5 * I2MM; // Min distance from hole center to edge of plywood
+width = 0.75 * I2MM + extra_width;
 notch_edge = 0.1 * I2MM;
 thickness = 2; // ruler thickness
+small_hole_dia = 2;
+big_hole_dia = 7/16 * I2MM;
 
 // cuts a v-shape notch if center is positioned on edge of shape
 module notch(x, y) {
@@ -28,10 +37,12 @@ module ruler_blank() {
         r = width/2;
         union() {
             disk(0, r, r);
-            disk(dist, r, r);
-            disk(dist + clearance, r, r);
-            disk(diag_dist, r, r);
-            disk(diag_dist + clearance, r, r);
+            // Don't care about clearance holes for after drilling
+            // guide
+            if (AFTER_DRILLING)
+                disk(diag_dist, r, r);
+            else
+                disk(diag_dist + clearance, r, r);
         }
     }
 }
@@ -46,15 +57,20 @@ module notch_punchouts(x) {
 
 module ruler_punchouts() {
     r = width/2;
-    r1 = 1;
-    r2 = 1.3;
+    guide_r1 = small_hole_dia/2;
+    guide_r2 = guide_r1 + 0.3; // slight flaring on top end for pencil-point
+    bolt_r1 = AFTER_DRILLING ? big_hole_dia/2 : guide_r1;
+    bolt_r2 = AFTER_DRILLING ? bolt_r1 : guide_r2;  
+    
     union() {
-        disk(0, r1, r2);
-        disk(dist, r1, r2);
-        disk(dist + clearance, r1, r2);
-        disk(diag_dist, r1, r2);
-        disk(diag_dist + clearance, r1, r2);
+        disk(0, bolt_r1, bolt_r2);
+        disk(dist/2, guide_r1, guide_r2);
+        disk(dist, bolt_r1, bolt_r2);
+        disk(dist + clearance, guide_r1, guide_r2);
+        disk(diag_dist, bolt_r1, bolt_r2);
+        disk(diag_dist + clearance, guide_r1, guide_r2);
         notch_punchouts(0);
+        notch_punchouts(dist/2);
         notch_punchouts(dist);
         notch_punchouts(diag_dist);
     }
